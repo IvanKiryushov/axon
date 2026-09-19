@@ -1,0 +1,44 @@
+# Environments and Secrets
+.env
+.env.*
+!.env.example
+*.local.env
+
+# Python Cache & Testing
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+ENV/
+
+# Data & Corpora (Proprietary raw dumps)
+Data/*
+!Data/media_captions_cache.json
+!Data/test_bench_kr_dataset.json
+!Data/test_cross_lingual_dataset.json
+
+# Database & Runtime Logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.pid
+Scripts/bot/data/logs/*
+!Scripts/bot/data/logs/.gitkeep
+Scripts/bot/data/*.db
+Scripts/bot/data/*.pid
+Scripts/bot/data/media_cache/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Temporary Files
+.tmp*
+*.tar.gz

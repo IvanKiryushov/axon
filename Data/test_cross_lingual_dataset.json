@@ -1,0 +1,379 @@
+[
+  {
+    "id": "CL-01-RU",
+    "pair_id": "CL-01",
+    "lang": "ru",
+    "name": "Деформационный шов в монолитной плите (RU)",
+    "question": "Как смоделировать деформационный шов в монолитной плите и какую категорию для этого использовать?",
+    "expected_keywords_any": [
+      [
+        "222_дефшов",
+        "дефшов"
+      ],
+      [
+        "каркас несущий",
+        "несущий каркас"
+      ],
+      [
+        "гидроизоляция"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      524633,
+      374786
+    ],
+    "expected_rubric": "Семейство дефшова выполняется в категории «Каркас несущий» с подкатегорией «Гидроизоляция». Для монолитных плит используется специализированное семейство 222_Дефшов (ФП_Нижняя часть).",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-01-EN",
+    "pair_id": "CL-01",
+    "lang": "en",
+    "name": "Expansion joint in monolithic slab (EN)",
+    "question": "How to model an expansion joint in a monolithic slab and which category should be used?",
+    "expected_keywords_any": [
+      [
+        "222_дефшов",
+        "дефшов"
+      ],
+      [
+        "каркас несущий",
+        "structural framing",
+        "structural frame"
+      ],
+      [
+        "гидроизоляция",
+        "waterproofing"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      524633,
+      374786
+    ],
+    "expected_rubric": "Expansion joint family belongs to category «Structural Framing» / «Structural Frame» («Каркас несущий») with subcategory «Гидроизоляция» (Waterproofing). Family `222_Дефшов` is used for slabs. Family name must be kept in Cyrillic.",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-02-RU",
+    "pair_id": "CL-02",
+    "lang": "ru",
+    "name": "Лобовая балка лестничной клетки (RU)",
+    "question": "В какой рабочий набор помещать лобовую балку лестницы и на основе чего создано ее семейство?",
+    "expected_keywords_any": [
+      [
+        "кр_лестницы"
+      ],
+      [
+        "обобщенная модель",
+        "по уровню",
+        "общмод_ур"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      65997,
+      374736
+    ],
+    "expected_rubric": "Семейство лобовой балки (205_Лобовая балка) создано на основе шаблона «По уровню» в категории «Обобщенная модель» (ОбщМод_Ур). Размещается строго в рабочем наборе «КР_Лестницы».",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-02-EN",
+    "pair_id": "CL-02",
+    "lang": "en",
+    "name": "Stair landing header beam (EN)",
+    "question": "Which workset should be used for the stair landing header beam and what is its hosting template?",
+    "expected_keywords_any": [
+      [
+        "кр_лестницы"
+      ],
+      [
+        "обобщенная модель",
+        "generic model",
+        "level",
+        "по уровню",
+        "общмод_ур"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      65997,
+      374736
+    ],
+    "expected_rubric": "Header beam family (`205_Лобовая балка`) is created based on Level template («По уровню») in Generic Models category (`Обобщенная модель` / `ОбщМод_Ур`). It must be placed strictly into workset `КР_Лестницы` (kept in Cyrillic).",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-03-RU",
+    "pair_id": "CL-03",
+    "lang": "ru",
+    "name": "Стадии демонтируемых конструкций (RU)",
+    "question": "Какую стадию необходимо назначить элементам при моделировании демонтажа пилонов и перекрытий?",
+    "expected_keywords_any": [
+      [
+        "снос"
+      ],
+      [
+        "существующие",
+        "фильтр",
+        "шаблон вида",
+        "40"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      164388
+    ],
+    "expected_rubric": "Для демонтируемых конструкций назначается стадия возведения «Снос» (или «Существующие» для исходных конструкций с фильтром сноса). Для схемы демонтажа на плане применяется шаблон вида 40 с фильтром по стадиям.",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-03-EN",
+    "pair_id": "CL-03",
+    "lang": "en",
+    "name": "Phasing for demolished structures (EN)",
+    "question": "Which phase should be assigned to elements when modeling the demolition of pylons and slabs?",
+    "expected_keywords_any": [
+      [
+        "снос",
+        "demolition"
+      ],
+      [
+        "существующие",
+        "existing",
+        "phase",
+        "шаблон вида",
+        "40"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      164388
+    ],
+    "expected_rubric": "Elements being demolished are assigned phase `Снос` (or Existing with demolition filter). View templates like `40 - ВертКонстр - Опл` with phase filters are used. Phase names must be specified in Cyrillic (`Снос`).",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-04-RU",
+    "pair_id": "CL-04",
+    "lang": "ru",
+    "name": "Корректировка защитного слоя арматуры по площади (RU)",
+    "question": "Как скорректировать защитный слой для сетки армирования по площади в плите перекрытия?",
+    "expected_keywords_any": [
+      [
+        "смещение"
+      ],
+      [
+        "распределенная",
+        "защитный слой"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      361031
+    ],
+    "expected_rubric": "В плите защитный слой в конструкциях по умолчанию равен 0, поэтому для корректировки положения сетки армирования по площади (инструмент «Распределенная») регламент предписывает использовать параметр «Смещение».",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-04-EN",
+    "pair_id": "CL-04",
+    "lang": "en",
+    "name": "Area reinforcement concrete cover adjustment (EN)",
+    "question": "How to adjust the concrete cover for an area reinforcement mesh in a floor slab?",
+    "expected_keywords_any": [
+      [
+        "смещение",
+        "offset"
+      ],
+      [
+        "распределенная",
+        "area reinforcement",
+        "cover"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      361031
+    ],
+    "expected_rubric": "Since default rebar cover in structural elements is 0, the regulation prescribes using the `Смещение` (Offset) parameter to adjust the position of area reinforcement mesh (`Распределенная`).",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-05-RU",
+    "pair_id": "CL-05",
+    "lang": "ru",
+    "name": "Отверстия в местах прохода шахт через плиты (RU)",
+    "question": "Каким инструментом создаются отверстия в перекрытиях в местах прохода вентиляционных шахт?",
+    "expected_keywords_any": [
+      [
+        "скрипт",
+        "созданиеотверстийпошахтам",
+        "232_отверстие",
+        "шахта",
+        "проем",
+        "отверстие"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      328169
+    ],
+    "expected_rubric": "Отверстия в перекрытиях при пересечении шахт выполняются скриптом СозданиеОтверстийПоШахтам.py с автоматическим размещением семейств `232_Отверстие в плите прямоугольное (Окно_Плита)`, либо специализированными семействами проемов / инструментом «Шахта».",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-05-EN",
+    "pair_id": "CL-05",
+    "lang": "en",
+    "name": "Shaft openings in floor slabs (EN)",
+    "question": "Which tool should be used to create openings in floor slabs where ventilation shafts pass through?",
+    "expected_keywords_any": [
+      [
+        "скрипт",
+        "script",
+        "созданиеотверстийпошахтам",
+        "232_отверстие",
+        "шахта",
+        "shaft",
+        "opening",
+        "проем"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      328169
+    ],
+    "expected_rubric": "Openings at shaft intersections are created using the automated script `СозданиеОтверстийПоШахтам.py` placing families `232_Отверстие в плите прямоугольное (Окно_Плита)`, or dedicated opening families / `Шахта` (Shaft Opening) tool according to regulations.",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-06-RU",
+    "pair_id": "CL-06",
+    "lang": "ru",
+    "name": "Ведомость удельного расхода материалов (RU)",
+    "question": "Как в проекте КЖ сформировать ведомость удельного расхода материалов на стадии Р?",
+    "expected_keywords_any": [
+      [
+        "ведомость",
+        "удельного расхода",
+        "расход"
+      ],
+      [
+        "стадия р",
+        "спецификация"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      66363
+    ],
+    "expected_rubric": "Ведомость удельного расхода материалов на стадии Р формируется через специализированную спецификацию по регламенту с подсчетом расхода стали и бетона на единицу площади/объема конструкций.",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-06-EN",
+    "pair_id": "CL-06",
+    "lang": "en",
+    "name": "Specific material consumption schedule Stage R (EN)",
+    "question": "How to generate the specific material consumption schedule at Stage R in structural drawings?",
+    "expected_keywords_any": [
+      [
+        "ведомость",
+        "расход",
+        "consumption"
+      ],
+      [
+        "стадия р",
+        "stage r",
+        "schedule"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [
+      66363
+    ],
+    "expected_rubric": "The specific material consumption schedule at Stage R (`Ведомость удельного расхода материалов (стадия Р)`) is generated via standard schedule templates calculating rebar and concrete ratios per area/volume.",
+    "is_refusal_test": false
+  },
+  {
+    "id": "CL-07-RU",
+    "pair_id": "CL-07",
+    "lang": "ru",
+    "name": "Расчет каркаса в SCAD Office (RU Out-of-Scope)",
+    "question": "Как экспортировать нагрузки из Revit в SCAD Office для динамического расчета каркаса?",
+    "expected_keywords_any": [
+      [
+        "нет информации",
+        "не относится",
+        "обратитесь к bim",
+        "не входит"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [],
+    "expected_rubric": "Бот должен выдать вежливый регламентный отказ: в базе регламентов КР нет инструкций по расчетным комплексам SCAD Office, для нестандартных задач необходимо обратиться в BIM-отдел.",
+    "is_refusal_test": true
+  },
+  {
+    "id": "CL-07-EN",
+    "pair_id": "CL-07",
+    "lang": "en",
+    "name": "Frame load export to SCAD Office (EN Out-of-Scope)",
+    "question": "How do I export structural loads from Revit to SCAD Office for dynamic frame analysis?",
+    "expected_keywords_any": [
+      [
+        "no information",
+        "not covered",
+        "bim department",
+        "out of scope",
+        "there is no"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [],
+    "expected_rubric": "The bot must return an English refusal: according to structural BIM regulations (04.04.02 КР), calculation workflows in SCAD Office are not covered. Direct user to contact BIM department.",
+    "is_refusal_test": true
+  },
+  {
+    "id": "CL-08-RU",
+    "pair_id": "CL-08",
+    "lang": "ru",
+    "name": "Преднапряженные канаты с натяжением на бетон (RU Refusal)",
+    "question": "Какая инструкция регламентирует раскладку канатов преднапряженной арматуры с натяжением на бетон в плите перекрытия?",
+    "expected_keywords_any": [
+      [
+        "нет информации",
+        "не регламентир",
+        "обратитесь к bim",
+        "согласован"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [],
+    "expected_rubric": "Бот должен констатировать отсутствие корпоративного регламента по преднапряженному железобетону с натяжением на бетон и указать на необходимость согласования индивидуального решения с BIM-отделом.",
+    "is_refusal_test": true
+  },
+  {
+    "id": "CL-08-EN",
+    "pair_id": "CL-08",
+    "lang": "en",
+    "name": "Post-tensioned tendons standard (EN Refusal)",
+    "question": "Which standard regulates the layout of post-tensioned bonded tendons in a concrete floor slab?",
+    "expected_keywords_any": [
+      [
+        "no information",
+        "no guideline",
+        "bim department",
+        "not covered",
+        "there is no"
+      ]
+    ],
+    "expected_media": false,
+    "allowed_page_ids": [],
+    "expected_rubric": "The bot must state that post-tensioned tendon modeling is not standardized in company KR regulations and direct the user to consult the BIM department for approval.",
+    "is_refusal_test": true
+  }
+]

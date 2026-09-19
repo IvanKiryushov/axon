@@ -1,0 +1,22 @@
+[Unit]
+Description=AxonBot Telegram BIM Assistant Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/AxonBot
+ExecStart=/opt/AxonBot/.venv/bin/python -m Scripts.bot.main
+Restart=always
+RestartSec=5
+KillMode=mixed
+Environment=PYTHONUNBUFFERED=1
+StandardOutput=append:/opt/AxonBot/Scripts/bot/data/systemd.log
+StandardError=append:/opt/AxonBot/Scripts/bot/data/systemd_err.log
+
+# Cgroup resource limits for predictable footprint
+MemoryMax=256M
+MemoryHigh=200M
+
+[Install]
+WantedBy=multi-user.target

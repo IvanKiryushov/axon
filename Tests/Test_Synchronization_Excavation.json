@@ -1,0 +1,2284 @@
+[
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 10
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Общие сведения\n\nВ данной инструкции описаны все этапы разработки котлована рекомендованным способом.\n\nЗапрещено использовать инструмент Топоповерхность при создании котлована.\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04cae9"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04cae9"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04cae9"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 8
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Видеоинструкция\n\n Видеоинструкция\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caea"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caea"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caea"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 20
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Подготовка модели BIM\n\nПервичная подготовка файла модели производится BIM-координатором. Далее описаны пункты которые должны быть проделаны при создании модели котлована.\n\nПодгрузить модель с фундаментом и бетонной подготовкой.\n\n | \n\n | \nДля плана потолка необходимо создать вспомогательный уровень (или уровни, если объект большой и имеет несколько отметок низа фундамента) строго по низу бетонной подготовки.\n\nОтметку низу бетонной подготовки определить по модели подземного этажа соответствующего здания.\nПри необходимости создается несколько вспомогательных уровней для разных секций.\nИмя вспомогательного уровня должно соответствовать стандарту именования, например: КР_-5,940_-1этаж_Низ подготовки.\nВспомогательному уровню необходимо установить мониторинг на уровень фундаментной плиты.\n | \n\n🖼 [Изображение: 377606.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377606.png)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 20,
+          "to": 42
+        }
+      }
+    },
+    "pageContent": "🖼 [Изображение: 377606.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377606.png)\n\n | \nВ модели необходимо создать модель в контексте с массивом грунта, подготовленный отделом ГП.\n\nВыбрать рабочий набор КР_Грунт\n\nПерейти в режим создания модели в контексте в категории Обобщенная модель.\n\nВставить - Импорт DWG.\nВыбрать настройки как на картинке. Подгружать только Слой содержащий в себе массив грунта и оси.\n\n🖼 [Изображение: 377540.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377540.png)\n\nВ режиме отображения Каркас проверить/выставить положение импорта в плане по осям.\n\nОтобразить Базовую точку и скорректировать положение грунта по высоте.\n\nРасчленить - Частичное расчленение, выбрать массив грунта.\n\n🖼 [Изображение: 377558.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377558.png)\n\nУдалить оставшийся импорт"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 40,
+          "to": 49
+        }
+      }
+    },
+    "pageContent": "🖼 [Изображение: 377558.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377558.png)\n\nУдалить оставшийся импорт\n\n🖼 [Изображение: 377237.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377237.png)\n\nЗадаем материал грунту внутри Модели в контексте.\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f023463"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f023463"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f023463"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 10
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован (продолжение)\n\n🖼 [Изображение: 377450.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377450.png)\n\nЗавершаем корректировку модели в контексте.\n\n🖼 [Изображение: 377867.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377867.png)\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f023462"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f023462"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f023462"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 22
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Возможные ошибки при работе с импортируемым DWG.\n\nОшибка связана с вырезанием котлована внутри обобщенной модели\n\n🖼 [Изображение: 54822572.gif](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/54822572.gif)\n\n2. Ошибка связана с расчленением обобщенной модели.\n\n🖼 [Изображение: 54822577.gif](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/54822577.gif)\n\nРешение: Необходимо обратится к Координатору ГП с просьбой использовать в файле-задании сегментацию равную 0.1 (10 см на сегмент). \n\n | \n\n🖼 [Изображение: 377566.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377566.png)\n\n |\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caed"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caed"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caed"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 23
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Подготовка к моделированию\n\nГраницы полученной модели грунта должны быть выставлены по границам откосов с ПОС + 5-10 метров, с учетом отдельностоящих ФП под кран. | \n\n🖼 [Изображение: 377566.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377566.png)\n\n | \nДелаем копию исходного грунта, она понадобится нам для подсчета объемов для спецификации. | \n\n🖼 [Изображение: 377066.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377066.png)\n\n | \nДалее определяем необходимые для оформления котлована оси.\n\nИнформацию о ненужных в комплекте осях необходимо передать BIM-координатору по заявке. Также можно проделать это после детализации дна котлована.\n\n | \n\n🖼 [Изображение: 377092.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377092.png)\n\n |"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 19,
+          "to": 26
+        }
+      }
+    },
+    "pageContent": "| \n\n🖼 [Изображение: 377092.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377092.png)\n\n |\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caee"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caee"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caee"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 20
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Формирование котлована\n\nВыполняем все выемки семейством 233_Полый переход фиктивный. Перед применением рекомендуется ознакомиться с инструкцией.\n\nМоделировать необходимо в рабочем наборе 02_Грунт.\n\n | \n\n🖼 [Изображение: 376484.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376484.png)\n\n | \nУдобно производить моделирование на плане 1-го этажа, установив следующие настройки Секущего диапазона для отображения всего грунта и всех форм вырезания.\n\nВерх и секущая плоскость: выставить смещение выше уровня грунта\nУровень: Неограниченный\n | \n\n🖼 [Изображение: 377578.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377578.png)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 20,
+          "to": 38
+        }
+      }
+    },
+    "pageContent": "🖼 [Изображение: 377578.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377578.png)\n\n | \nМоделируем вырезание грунта под здание. \nВерх вырезания должен быть выше поверхности грунта, например, можно откладывать от уровня 1-го этажа.\nНиз вырезания должен быть по низу бетонной подготовки.\nВертикальные грани вырезания выполнять по границе фундаментной плиты или бетонной подготовки.\n | \n\n🖼 [Изображение: 377448.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377448.png)\n\n🖼 [Изображение: 377657.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377657.png)\n\n🖼 [Изображение: 377833.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377833.png)\n\n | \nПосле моделирования Вырезать формы из грунта. \n\nРекомендуется использовать плагин ModPlus - Соединить."
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 35,
+          "to": 51
+        }
+      }
+    },
+    "pageContent": "| \nПосле моделирования Вырезать формы из грунта. \n\nРекомендуется использовать плагин ModPlus - Соединить.\n\n🖼 [Изображение: 377462.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377462.png)\n\nКонфигурацию плагин можно составить так:\n\n🖼 [Изображение: 377870.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377870.png)\n\n | \n\n🖼 [Изображение: 377862.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377862.png)\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f022920"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f022920"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f022920"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 16
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован (продолжение)\n\n🖼 [Изображение: 377543.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377543.png)\n\n | \n 2. Моделируем вырезание откосов.\n\nВерх вырезания д. б. выше поверхности грунта, например, можно откладывать от уровня 1-го этажа.\nНиз вырезания д. б. по низу бетонной подготовки.\nВертикальные грани вырезания рекомендуется выполнять по границе фундаментной плиты, а не бетонной подготовки, для последующего удобного подсчета объемов для спецификации.\nНаклонная грань, формирующая угол откоса д. б. под углом, который определяется самостоятельно проектировщиком в зависимости от грунта.\n | \n\n🖼 [Изображение: 377448.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377448.png)\n\n🖼 [Изображение: 376611.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376611.png)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 16,
+          "to": 36
+        }
+      }
+    },
+    "pageContent": "🖼 [Изображение: 376611.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376611.png)\n\n🖼 [Изображение: 376244.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376244.png)\n\n | \nПосле моделирования Вырезать формы из грунта. \n\nРекомендуется использовать плагин ModPlus - Соединить.\n\n🖼 [Изображение: 377462.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377462.png)\n\nКонфигурацию плагин можно составить так:\n\n🖼 [Изображение: 377870.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377870.png)\n\n | \n\n🖼 [Изображение: 376868.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376868.png)\n\n | \n 3. Последним этапом является моделирование мелких вырезаний под приямки, перепады."
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 35,
+          "to": 41
+        }
+      }
+    },
+    "pageContent": "| \n 3. Последним этапом является моделирование мелких вырезаний под приямки, перепады.\n\nПолое вырезание рекомендуется выполнять на основе вспомогательных уровней строго по низу бетонной подготовки соответствующего корпуса. Размещать удобно на плане потолка, т.к. нужно видеть границы под подошвой бетонной подготовки.\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291f"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291f"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291f"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 16
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован (продолжение)\n\nВырезания должны повторять форму бетонной подготовки. Все размеры можно задавать вручную в параметрах экземпляра семейства, либо выравниванием по граням нужных конструкций за ручки семейства на плане.\n\nЕсли в модели не хватает вспомогательных уровней то необходимо обратиться в BIM-отдел оставив заявку | \n\n🖼 [Изображение: 377637.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377637.png)\n\n🖼 [Изображение: 377697.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377697.png)\n\n | \nДля корректного отображения элементов на плане потолка необходимо проверить настройки Секущего диапазона:Верх : выставить уровень соответствующий плану\nУровень: выставить уровень -1 этажа, т.к. он находится над бетонной подготовкой\n\nТакже на плане необходимо Показать рабочие наборы:02_Грунт\n02_Бетонная подготовка - для отображение элементов БП из связанных файлов."
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 15,
+          "to": 40
+        }
+      }
+    },
+    "pageContent": "Также на плане необходимо Показать рабочие наборы:02_Грунт\n02_Бетонная подготовка - для отображение элементов БП из связанных файлов.\n\nСкрыть грунт с помощью Фильтра Грунт.\n\n | \n\n🖼 [Изображение: 377353.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377353.png)\n\n | \nПосле моделирования Вырезать формы из грунта. \n\nРекомендуется использовать плагин Modplus Соединение элементов.\n\n🖼 [Изображение: 377462.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377462.png)\n\nКонфигурацию плагин можно составить так:\n\n🖼 [Изображение: 377870.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377870.png)\n\n | \n\n🖼 [Изображение: 377032.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377032.png)\n\n | \nДелаем 2 копии грунта с вырезаниями, они понадобится нам для подсчета объемов для спецификации."
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 39,
+          "to": 47
+        }
+      }
+    },
+    "pageContent": "| \nДелаем 2 копии грунта с вырезаниями, они понадобится нам для подсчета объемов для спецификации. \n\nВ одной копии оставляем только вырезания под откосы, в другом только мелкие вырезания под приямки и перепады, лишнее удаляем.\n\n |\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291e"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291e"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291e"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 15
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован (продолжение)\n\n🖼 [Изображение: 377049.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377049.png)\n\n | \nПолучаем 4 замоделированных объема грунта. Переходим к подсчету объемов и заполнению спецификации \n\n | \n\n🖼 [Изображение: 376923.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376923.png)\n\n |\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291d"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291d"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00003f02291d"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 24
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Формирование подсыпки\n\nВ некоторых случаях необходимо формирование подсыпки, так как здание расположено над массивом существующего грунта. | \n\n🖼 [Изображение: 67732430.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732430.png)\n\n | \nНеобходимо замоделировать необходимый объем подсыпки моделью в контексте категории Обобщенная модель.\n\nНаименование объема подсыпки должно соответствовать правилам именования КР.\nНапример: Подсыпка_Песок средний\n\n | \n\n🖼 [Изображение: 67732428.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732428.png)\n\n | \nЗадаем объему грунта соответствующий материал подсыпки.\n\n | \n\n🖼 [Изображение: 67732429.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732429.png)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 19,
+          "to": 40
+        }
+      }
+    },
+    "pageContent": "| \nЗадаем объему грунта соответствующий материал подсыпки.\n\n | \n\n🖼 [Изображение: 67732429.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732429.png)\n\n | \nЕсли необходимо предварительно отредактировать форму исходного грунта, то рекомендуется это делать семейством 233_Полый переход фиктивный. Для ознакомления с инструкцией вернитесь выше на этап формирования котлована.\n\n | \n | \n Соединяем грунт с подсыпкой инструментом Соединить. Делать это можно вручную либо использовать плагин ModPlus - Соединить.\n\nВАЖНО!\nДля корректной подрезки необходимо выбирать сначала грунт, а затем подсыпку, не наоборот!\n\nВ таком случае замоделированная подсыпка подрежется исходным массивом грунта.\n\n | \n\n🖼 [Изображение: 67732432.gif](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732432.gif)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 38,
+          "to": 52
+        }
+      }
+    },
+    "pageContent": "| \n\n🖼 [Изображение: 67732432.gif](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732432.gif)\n\n | \nПоследним этапом является формирование дна котлована с учетом подсыпки. Для ознакомления с инструкцией вернитесь выше на этап формирования котлована.\n\n | \n\n🖼 [Изображение: 67732407.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/67732407.png)\n\n |\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caf0"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caf0"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caf0"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 23
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Спецификации\n\nЗаготовка\n10_ОД_Ведомость спецификаций\n\nСтроки данной спецификации заполняются вручную.\n\nОбъемы необходимо считать вручную вычисляя разницу соответствующих объемов грунтов.\n\n🖼 [Изображение: 375986.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/375986.png)\n\n🖼 [Изображение: 376729.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376729.png)\n\nДля подсчета объема грунта дорабатываемого вручную по дну котлована можно:\n\nСоздать вспомогательный план дна котлована.\nСоздать штриховку по дну котлована, соответствующую ручной доработке.\nУмножить площадь на толщину слоя грунта для ручной доработке, например на 0,1м.\nДобавить полученное число к объему, полученному в предыдущем пункте.\n\n🖼 [Изображение: 376790.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376790.png)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 23,
+          "to": 26
+        }
+      }
+    },
+    "pageContent": "🖼 [Изображение: 376790.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/376790.png)\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caf1"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caf1"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-00006f04caf1"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 10
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## План котлована\n\nДля оформления плана котлована используем План несущих конструкций в уровне первого этажа, настроив секущий диапазон так, чтобы был виде верх грунта (если он выше этого уровня) и низ котлована.\n\n🖼 [Изображение: 377820.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377820.png)\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949286"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949286"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949286"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 12
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Границы откосов\n\nДля оформления границ откосов на плане использовать семейство элементов узлов 051_Граница откоса.\n\nПараметр доборный_Другой_Вкл позволяет сделать последний доборный штрих коротким. Также в настройках типоразмера можно настроить ширину откоса вручную.\n\n🖼 [Изображение: 48530825.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/48530825.png)\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949287"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949287"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949287"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 17
+        }
+      }
+    },
+    "pageContent": "ДОКУМЕНТ: Котлован\n\n## Граница грунта\n\nДля оформления верхней границы грунта на плане использовать комбинацию двух штриховок.\n\nОтрисовывать \"кривую\" границу грунта удобно с помощью инструмента Выбрать линии в режиме создания штриховки.\n\n🖼 [Изображение: 377856.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377856.png)\n\n🖼 [Изображение: 377138.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377138.png)\n\n🖼 [Изображение: 377398.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377398.png)\n\nДля оформления границы грунта на разрезе использовать последовательность Граница грунта в соответствии с масштабом сечения или семейство элементов узлов 051_Граница грунта.\n\n🖼 [Изображение: 377855.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377855.png)"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 1,
+      "loc": {
+        "lines": {
+          "from": 17,
+          "to": 20
+        }
+      }
+    },
+    "pageContent": "🖼 [Изображение: 377855.png](https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/download/attachments/590285/377855.png)\n\nИсточник: https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285\nСтатья: Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 2,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949288"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 3,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949288"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 4,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 5,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 6,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 7,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "00000000-0000-4000-a000-000071949288"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 8,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "590285"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 9,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "Котлован"
+  },
+  {
+    "metadata": {
+      "source": "blob",
+      "blobType": "application/json",
+      "line": 10,
+      "loc": {
+        "lines": {
+          "from": 1,
+          "to": 1
+        }
+      }
+    },
+    "pageContent": "https://ivankiryushovsworkspace-25173842.atlassian.net/wiki/spaces/~70121c7daeab8fb0d42e5a9d66704bad7c375/pages/590285"
+  }
+]

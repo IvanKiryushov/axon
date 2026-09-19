@@ -1,0 +1,415 @@
+{
+  "name": "Axon: Confluence → Qdrant Синхронизация",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "de8c21a9-788e-4412-bc45-c046c28bbc3c",
+      "name": "Запуск вручную",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        6624,
+        1648
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-1",
+              "name": "confluenceBaseUrl",
+              "value": "https://your-domain.atlassian.net",
+              "type": "string"
+            },
+            {
+              "id": "cfg-2",
+              "name": "spaceKey",
+              "value": "YOUR_SPACE_KEY",
+              "type": "string"
+            },
+            {
+              "id": "cfg-3",
+              "name": "qdrantCollection",
+              "value": "KR-BIM",
+              "type": "string"
+            },
+            {
+              "id": "cfg-4",
+              "name": "ancestorId",
+              "value": "ROOT_PAGE_ID",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6061eeb7-7c0a-42a7-ae5f-bd47743343ce",
+      "name": "Настройки",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        6848,
+        1648
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.confluenceBaseUrl.replace(/\\/wiki\\/?$/, '') }}/wiki/rest/api/content/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "cql",
+              "value": "={{ 'space = \"' + $json.spaceKey + '\" AND type = page' }}"
+            },
+            {
+              "name": "expand",
+              "value": "body.storage,version,space,metadata.properties.media_captions"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {
+          "pagination": {
+            "pagination": {
+              "paginationMode": "responseContainsNextURL",
+              "nextURL": "={{ $response.body._links.next ? ($response.body._links.base + $response.body._links.next) : undefined }}",
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ !$response.body?._links?.next }}",
+              "limitPagesFetched": true,
+              "maxRequests": 5
+            }
+          }
+        }
+      },
+      "id": "d0f8654a-188b-438b-be91-e6ba4238ec96",
+      "name": "Поиск страниц по разделу",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        7072,
+        1648
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "mV9ACSkfhSFY9kA0",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "point",
+        "operation": "scrollPoints",
+        "collectionName": {
+          "__rl": true,
+          "value": "KR-BIM",
+          "mode": "list",
+          "cachedResultName": "KR-BIM"
+        },
+        "limit": 1000,
+        "requestOptions": {}
+      },
+      "id": "3fab9da4-1d0c-43cc-ba3a-a73e2e96ec59",
+      "name": "Qdrant - Считать версии",
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        7296,
+        1648
+      ],
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "SMPs1OWOXBsQokVj",
+          "name": "Qdrant account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Извлекаем список страниц Confluence со всех страниц пагинации\nconst confPages = [];\nfor (const item of $('Поиск страниц по разделу').all()) {\n  const res = item.json.results || [];\n  confPages.push(...res);\n}\n\n// 2. Извлекаем существующие точки из Qdrant\nlet qdrantPoints = [];\ntry {\n  const qdrantNode = $('Qdrant - Считать версии').first();\n  qdrantPoints = qdrantNode.json.result?.points || qdrantNode.json.points || [];\n  if (!Array.isArray(qdrantPoints) && $('Qdrant - Считать версии').all().length > 0) {\n    qdrantPoints = $('Qdrant - Считать версии').all().map(i => i.json);\n  }\n} catch (e) {\n  qdrantPoints = [];\n}\n\n// 3. Строим карту существующих версий в Qdrant: { [pageId]: maxVersion }\nconst existingVersions = {};\nfor (const pt of qdrantPoints) {\n  const m = pt.payload?.metadata || pt.metadata || pt.payload;\n  if (m && m.pageId) {\n    const pId = String(m.pageId);\n    const v = Number(m.version) || 0;\n    if (!existingVersions[pId] || v > existingVersions[pId]) {\n      existingVersions[pId] = v;\n    }\n  }\n}\n\n// 4. Находим страницы, которые новые или изменились (с дедупликацией)\nconst seenIds = new Set();\nconst pagesToUpdate = [];\n\nfor (const page of confPages) {\n  const pId = String(page.id);\n  if (seenIds.has(pId)) continue;\n  seenIds.add(pId);\n\n  const currentVersion = Number(page.version?.number) || 1;\n  const inQdrantVersion = existingVersions[pId];\n\n  // Страница новая ИЛИ ее версия в Confluence выше, чем в Qdrant\n  if (inQdrantVersion === undefined || currentVersion > inQdrantVersion) {\n    pagesToUpdate.push({\n      json: {\n        pageId: pId,\n        title: page.title,\n        version: currentVersion,\n        oldVersion: inQdrantVersion || 0,\n        isNew: inQdrantVersion === undefined,\n        pageData: page\n      }\n    });\n  }\n}\n\nreturn pagesToUpdate;"
+      },
+      "id": "4da622d7-b7f7-4674-8bd2-b793a54262b5",
+      "name": "Детектор изменений",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7504,
+        1648
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "point",
+        "operation": "deletePoints",
+        "collectionName": {
+          "__rl": true,
+          "value": "KR-BIM",
+          "mode": "list",
+          "cachedResultName": "KR-BIM"
+        },
+        "points": "null",
+        "filter": "={\n  \"must\": [\n    {\n      \"key\": \"metadata.pageId\",\n      \"match\": {\n        \"value\": \"{{ $json.pageId }}\"\n      }\n    }\n  ]\n}",
+        "requestOptions": {}
+      },
+      "id": "7af84de8-0623-495f-9975-81e490dcfaaa",
+      "name": "Qdrant - Удалить старые чанки",
+      "type": "n8n-nodes-qdrant.qdrant",
+      "typeVersion": 1,
+      "position": [
+        7728,
+        1648
+      ],
+      "credentials": {
+        "qdrantRestApi": {
+          "id": "SMPs1OWOXBsQokVj",
+          "name": "Qdrant account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = [];\nconst baseUrl = $('Настройки').first().json.confluenceBaseUrl.replace(/\\/wiki\\/?$/, '');\nconst spaceKey = $('Настройки').first().json.spaceKey || '~70121c7daeab8fb0d42e5a9d66704bad7c375';\n\nfunction stringToUUID(str) {\n  let hash = 0;\n  for (let i = 0; i < str.length; i++) {\n    hash = ((hash << 5) - hash) + str.charCodeAt(i);\n    hash |= 0;\n  }\n  const hex = Math.abs(hash).toString(16).padStart(32, '0');\n  return `${hex.slice(0,8)}-${hex.slice(8,12)}-4${hex.slice(13,16)}-a${hex.slice(17,20)}-${hex.slice(20,32)}`;\n}\n\nfunction htmlToMarkdownWithInlineMedia(html, pageId, captions = {}) {\n  if (!html) return '';\n\n  let cleanHtml = html;\n\n  // 1. Очистка пустых заголовков (включая пробелы и &nbsp;)\n  cleanHtml = cleanHtml.replace(/<h[1-6][^>]*>(?:\\s|&nbsp;|<[^>]+>)*<\\/h[1-6]>/gi, (match) => {\n    const inner = match.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();\n    return inner ? match : '';\n  });\n\n  // 2. Заголовки внутри ячеек таблиц (th/td) переводим в strong, чтобы не рвать строки таблицы\n  cleanHtml = cleanHtml.replace(/<(td|th)([^>]*)>([\\s\\S]*?)<\\/\\1>/gi, (match, tag, attrs, content) => {\n    const cleanContent = content.replace(/<h[1-6][^>]*>([\\s\\S]*?)<\\/h[1-6]>/gi, '<strong>$1</strong>');\n    return `<${tag}${attrs}>${cleanContent}</${tag}>`;\n  });\n\n  return cleanHtml\n    .replace(/<ac:image([^>]*)>[\\s\\S]*?ri:filename=[\"']([^\"']+)[\"'][\\s\\S]*?<\\/ac:image>/gi, (match, attrs, filename) => {\n      let captionText = captions[filename];\n      if (!captionText) {\n        const altMatch = attrs.match(/ac:(?:alt|title)=[\"']([^\"']+)[\"']/i);\n        if (altMatch) captionText = altMatch[1];\n      }\n      const caption = captionText ? ` (${captionText.trim()})` : '';\n      const url = `${baseUrl}/wiki/download/attachments/${pageId}/${encodeURIComponent(filename)}`;\n      return `\\n\\n🖼 [Изображение: ${filename}${caption}](${url})\\n\\n`;\n    })\n    .replace(/<img\\s+[^>]*src=[\"']([^\"']+)[\"'][^>]*>/gi, (match, src) => {\n      let fullUrl = src.startsWith('/') ? baseUrl + src : src;\n      return `\\n\\n🖼 [Изображение](${fullUrl})\\n\\n`;\n    })\n    .replace(/<h[1-3][^>]*>(.*?)<\\/h[1-3]>/gi, '\\n\\n## $1\\n\\n')\n    .replace(/<h[4-6][^>]*>(.*?)<\\/h[4-6]>/gi, '\\n\\n### $1\\n\\n')\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .replace(/<\\/p>/gi, '\\n\\n')\n    .replace(/<\\/li>/gi, '\\n')\n    .replace(/<tr[^>]*>/gi, '\\n')\n    .replace(/<\\/td>|<\\/th>/gi, ' | ')\n    .replace(/<[^>]+>/g, '')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\")\n    .replace(/&laquo;/g, '«')\n    .replace(/&raquo;/g, '»')\n    .replace(/\\r\\n/g, '\\n')\n    .replace(/[ \\t]+/g, ' ')\n    .replace(/\\n\\s*\\n\\s*\\n+/g, '\\n\\n')\n    .trim();\n}\n\nfunction splitIntoSemanticSections(title, fullText, pageUrl, pageId, maxLen = 1800, overlap = 300) {\n  // Нарезка по заголовкам ## и ###\n  const rawSections = fullText.split(/\\n(?=#{2,3}\\s)/).map(s => s.trim()).filter(Boolean);\n  \n  // Механизм слияния микросекций (Micro-chunk Merging): секции < 150 символов склеиваются\n  const mergedSections = [];\n  let buffer = '';\n\n  for (let i = 0; i < rawSections.length; i++) {\n    const sec = rawSections[i];\n    if (!buffer) {\n      buffer = sec;\n    } else {\n      buffer += '\\n\\n' + sec;\n    }\n\n    if (buffer.length >= 150 && i < rawSections.length - 1) {\n      mergedSections.push(buffer);\n      buffer = '';\n    }\n  }\n\n  if (buffer) {\n    if (buffer.length < 150 && mergedSections.length > 0) {\n      mergedSections[mergedSections.length - 1] += '\\n\\n' + buffer;\n    } else {\n      mergedSections.push(buffer);\n    }\n  }\n\n  const result = [];\n\n  for (let idx = 0; idx < mergedSections.length; idx++) {\n    const sec = mergedSections[idx].trim();\n    if (!sec || sec.length < 20) continue;\n\n    const headerMatch = sec.match(/^(#{2,3}\\s+[^\\n]+)/);\n    const secHeader = headerMatch ? headerMatch[1].trim() : `Раздел ${idx + 1}`;\n\n    if (sec.length <= maxLen) {\n      result.push({\n        text: `ДОКУМЕНТ: ${title}\\n\\n${sec}\\n\\nИсточник: ${pageUrl}\\nСтатья: ${title}`,\n        chunkIdx: idx\n      });\n    } else {\n      const paras = sec.split(/\\n\\n+/).map(p => p.trim()).filter(Boolean);\n      let subIdx = 0;\n      let partNum = 1;\n      let curParas = [];\n      let curLen = 0;\n      const prefixBase = `ДОКУМЕНТ: ${title}\\nРАЗДЕЛ: ${secHeader}`;\n\n      for (let i = 0; i < paras.length; i++) {\n        const p = paras[i];\n        const prefix = partNum > 1 ? `${prefixBase} (Часть ${partNum})\\n\\n` : `ДОКУМЕНТ: ${title}\\n\\n`;\n        const testLen = prefix.length + curLen + p.length + 2;\n\n        if (testLen <= maxLen || curParas.length === 0) {\n          curParas.push(p);\n          curLen += p.length + 2;\n        } else {\n          const chunkBody = curParas.join('\\n\\n');\n          result.push({\n            text: `${prefix}${chunkBody}\\n\\nИсточник: ${pageUrl}\\nСтатья: ${title}`,\n            chunkIdx: `${idx}_${subIdx++}`\n          });\n          partNum++;\n\n          const overlapParas = [];\n          let accLen = 0;\n          for (let j = curParas.length - 1; j >= 0; j--) {\n            const prevP = curParas[j];\n            if (accLen + prevP.length <= overlap) {\n              overlapParas.unshift(prevP);\n              accLen += prevP.length + 2;\n            } else {\n              if (overlapParas.length === 0) {\n                const sliceText = prevP.slice(-overlap).trim();\n                if (sliceText) overlapParas.push('... ' + sliceText);\n              }\n              break;\n            }\n          }\n          curParas = overlapParas.concat([p]);\n          curLen = curParas.reduce((acc, x) => acc + x.length + 2, 0);\n        }\n      }\n\n      if (curParas.length > 0) {\n        const prefix = partNum > 1 ? `${prefixBase} (Часть ${partNum})\\n\\n` : `ДОКУМЕНТ: ${title}\\n\\n`;\n        const chunkBody = curParas.join('\\n\\n');\n        result.push({\n          text: `${prefix}${chunkBody}\\n\\nИсточник: ${pageUrl}\\nСтатья: ${title}`,\n          chunkIdx: `${idx}_${subIdx}`\n        });\n      }\n    }\n  }\n\n  if (result.length === 0 && fullText.trim()) {\n    result.push({\n      text: `ДОКУМЕНТ: ${title}\\n\\n${fullText.trim()}\\n\\nИсточник: ${pageUrl}\\nСтатья: ${title}`,\n      chunkIdx: 0\n    });\n  }\n  return result;\n}\n\nconst seenChunks = new Set();\nconst inputItems = $('Детектор изменений').all();\n\nfor (const item of inputItems) {\n  const page = item.json.pageData;\n  if (!page) continue;\n\n  const html = page.body?.storage?.value || '';\n  const pageUrl = `${baseUrl}/wiki/spaces/${spaceKey}/pages/${page.id}`;\n  const captions = page.metadata?.properties?.media_captions?.value || {};\n\n  let formattedText = htmlToMarkdownWithInlineMedia(html, page.id, captions);\n  if (!formattedText || formattedText.length < 20) {\n    formattedText = 'Раздел в разработке (пустая страница в Confluence).';\n  }\n\n  const chunks = splitIntoSemanticSections(page.title, formattedText, pageUrl, page.id, 1800, 300);\n\n  chunks.forEach(({ text, chunkIdx }) => {\n    if (seenChunks.has(text)) return;\n    seenChunks.add(text);\n\n    const deterministicId = stringToUUID(`confluence_${page.id}_chunk_${chunkIdx}`);\n\n    items.push({\n      json: {\n        pageContent: text,\n        id: deterministicId,\n        pageId: String(page.id),\n        metadata: {\n          id: deterministicId,\n          pageId: String(page.id),\n          version: Number(page.version?.number) || 1,\n          title: page.title,\n          url: pageUrl\n        }\n      }\n    });\n  });\n}\n\nreturn items;"
+      },
+      "id": "1d2b07df-ffc0-43b9-95e0-1d8afd0e1325",
+      "name": "Чанкинг и VLM-разметка",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7952,
+        1648
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "KR-BIM",
+          "mode": "list",
+          "cachedResultName": "KR-BIM"
+        },
+        "options": {}
+      },
+      "id": "258b225f-6de3-45c6-998e-56f358a696e6",
+      "name": "Qdrant - Сохранить",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1,
+      "position": [
+        8176,
+        1648
+      ],
+      "credentials": {
+        "qdrantApi": {
+          "id": "EagigrF8qDpGWNnP",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.pageContent }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "pageId",
+                "value": "={{ $json.metadata.pageId }}"
+              },
+              {
+                "name": "version",
+                "value": "={{ $json.metadata.version }}"
+              },
+              {
+                "name": "title",
+                "value": "={{ $json.metadata.title }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $json.metadata.url }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        8304,
+        1872
+      ],
+      "id": "03dec8df-195f-46d1-a617-ad8cbcaef30d",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "1e315e4a-ba61-4ca5-9b89-68957305e5d1",
+      "name": "OpenAI Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        8176,
+        1872
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "uolaWpfHDyMcaNqm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chunkSize": 10000
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        8304,
+        2048
+      ],
+      "id": "f9fa4c9c-47ec-469a-8389-f767b747d6a2",
+      "name": "Character Text Splitter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Запуск вручную": {
+      "main": [
+        [
+          {
+            "node": "Настройки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Настройки": {
+      "main": [
+        [
+          {
+            "node": "Поиск страниц по разделу",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Поиск страниц по разделу": {
+      "main": [
+        [
+          {
+            "node": "Qdrant - Считать версии",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant - Считать версии": {
+      "main": [
+        [
+          {
+            "node": "Детектор изменений",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Детектор изменений": {
+      "main": [
+        [
+          {
+            "node": "Qdrant - Удалить старые чанки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant - Удалить старые чанки": {
+      "main": [
+        [
+          {
+            "node": "Чанкинг и VLM-разметка",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Чанкинг и VLM-разметка": {
+      "main": [
+        [
+          {
+            "node": "Qdrant - Сохранить",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant - Сохранить",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant - Сохранить",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "82f1e066-cc85-45e9-86cb-b6eeb1b64078",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "924ada3e6f4bad3dac3b18961d190ef94734b689b612a7bee71dc5c97985d7e0"
+  },
+  "nodeGroups": [],
+  "id": "YJXbqTYjjbcrfz1KR2dwx",
+  "tags": []
+}

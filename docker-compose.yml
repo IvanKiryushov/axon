@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  axonbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: axonbot_service
+    restart: unless-stopped
+    # Используем host-сеть для мгновенного доступа к localhost:5678 (n8n) без мостов
+    network_mode: "host"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    env_file:
+      - .env
+    volumes:
+      # Персистентное хранилище базы SQLite и сессионных логов
+      - ./Scripts/bot/data:/app/Scripts/bot/data
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"

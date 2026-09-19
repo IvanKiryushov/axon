@@ -1,0 +1,26 @@
+# Version control & Environments
+.git
+.gitignore
+.env
+*.local.env
+
+# Data and large assets
+Data/BIM
+Data/Chunking
+Data/Sanitized_KR
+Assets/avatar.png
+
+# Caches and logs
+__pycache__
+*.py[cod]
+.pytest_cache
+*.log
+Scripts/bot/data/logs/*
+!Scripts/bot/data/logs/.gitkeep
+Scripts/bot/data/*.db
+Scripts/bot/data/*.pid
+
+# Local documentation & artifacts
+GEMINI.md
+STATUS.md
+Archive
