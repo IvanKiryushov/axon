@@ -61,12 +61,23 @@ async def init_db(admin_id: int = 0):
             );
         """)
         
-        # Автомиграция колонок для существующих баз данных
+        # Автомиграция колонок для существующих баз данных (access_requests)
         cursor = await db.execute("PRAGMA table_info(access_requests);")
         existing_cols = {row["name"] for row in await cursor.fetchall()}
         for col_name, col_type in [("company", "TEXT"), ("email", "TEXT"), ("goal", "TEXT")]:
             if col_name not in existing_cols:
                 await db.execute(f"ALTER TABLE access_requests ADD COLUMN {col_name} {col_type};")
+        
+        # Автомиграция колонок для таблицы users (квоты и активность)
+        cursor_u = await db.execute("PRAGMA table_info(users);")
+        existing_user_cols = {row["name"] for row in await cursor_u.fetchall()}
+        for col_name, col_type in [
+            ("queries_used", "INTEGER NOT NULL DEFAULT 0"),
+            ("queries_limit", "INTEGER DEFAULT NULL"),
+            ("last_query_at", "TEXT")
+        ]:
+            if col_name not in existing_user_cols:
+                await db.execute(f"ALTER TABLE users ADD COLUMN {col_name} {col_type};")
         
         await db.commit()
         
@@ -247,7 +258,14 @@ async def resolve_access_request(request_id: int, approve: bool, admin_id: int) 
         
         if approve:
             await db.execute("""
-                UPDATE users SET role = ?, updated_at = ? WHERE user_id = ?;
+                UPDATE users 
+                SET role = ?, 
+                    queries_limit = CASE 
+                        WHEN queries_limit IS NULL OR (queries_limit > 0 AND queries_limit < 100) THEN 100
+                        ELSE queries_limit
+                    END,
+                    updated_at = ? 
+                WHERE user_id = ?;
             """, (new_role, now, target_user_id))
             
         await db.commit()
@@ -281,7 +299,7 @@ async def get_pending_requests() -> list[dict]:
         return [dict(r) for r in rows]
 
 async def get_lead_stats() -> dict:
-    """Возвращает сводную аналитику по пользователям и источникам лидов."""
+    """Возвращает сводную аналитику по пользователям, источникам лидов и расходу квот."""
     async with get_db() as db:
         cursor = await db.execute("SELECT COUNT(*) as total FROM users;")
         total_users = (await cursor.fetchone())["total"]
@@ -291,6 +309,17 @@ async def get_lead_stats() -> dict:
         
         cursor = await db.execute("SELECT COUNT(*) as pending FROM access_requests WHERE status = 'pending';")
         pending_requests = (await cursor.fetchone())["pending"]
+
+        cursor = await db.execute("SELECT COALESCE(SUM(queries_used), 0) as total_queries FROM users;")
+        total_queries = (await cursor.fetchone())["total_queries"]
+
+        cursor = await db.execute("""
+            SELECT COUNT(*) as exhausted 
+            FROM users 
+            WHERE role = 'guest' 
+              AND queries_used >= COALESCE(queries_limit, 15);
+        """)
+        exhausted_guests = (await cursor.fetchone())["exhausted"]
         
         cursor = await db.execute("""
             SELECT source, COUNT(*) as count 
@@ -304,8 +333,204 @@ async def get_lead_stats() -> dict:
             "total_users": total_users,
             "authorized_users": authorized_users,
             "pending_requests": pending_requests,
+            "total_queries": total_queries,
+            "exhausted_guests": exhausted_guests,
             "sources": sources
         }
+
+async def check_and_consume_quota(
+    user_id: int, 
+    role: str = "guest", 
+    default_limit: int = 15,
+    is_exempt: bool = False
+) -> tuple[bool, int, int]:
+    """
+    Атомарно проверяет и списывает 1 запрос из квоты пользователя.
+    Возвращает: (разрешено: bool, использовано: int, лимит: int).
+    Лимит = -1 означает вечный безлимит.
+    """
+    now = datetime.now().isoformat()
+    async with get_db() as db:
+        # Если пользователь освобожден от квот (Admin или в списке EXEMPT_USER_IDS)
+        if is_exempt or role == "admin":
+            await db.execute("""
+                UPDATE users 
+                SET queries_used = queries_used + 1, last_query_at = ?, updated_at = ?
+                WHERE user_id = ?;
+            """, (now, now, user_id))
+            await db.commit()
+            
+            cursor = await db.execute("SELECT queries_used FROM users WHERE user_id = ?;", (user_id,))
+            row = await cursor.fetchone()
+            used = row["queries_used"] if row else 1
+            return True, used, -1
+
+        # Атомарное обновление со строгой проверкой лимита
+        # queries_limit == -1: безлимит
+        # queries_limit IS NULL: используется default_limit
+        # queries_limit > 0: используется персональный queries_limit
+        cursor = await db.execute("""
+            UPDATE users 
+            SET queries_used = queries_used + 1,
+                last_query_at = ?,
+                updated_at = ?
+            WHERE user_id = ? 
+              AND (
+                queries_limit = -1
+                OR queries_used < COALESCE(queries_limit, ?)
+              );
+        """, (now, now, user_id, default_limit))
+        await db.commit()
+        
+        success = (cursor.rowcount == 1)
+        
+        cursor = await db.execute("""
+            SELECT queries_used, queries_limit FROM users WHERE user_id = ?;
+        """, (user_id,))
+        row = await cursor.fetchone()
+        if row:
+            used = row["queries_used"]
+            lim = row["queries_limit"] if row["queries_limit"] is not None else default_limit
+            return success, used, lim
+        return success, 0, default_limit
+
+async def refund_quota(user_id: int) -> None:
+    """Возвращает списанную квоту пользователю в случае сбоя генерации RAG."""
+    now = datetime.now().isoformat()
+    async with get_db() as db:
+        await db.execute("""
+            UPDATE users 
+            SET queries_used = MAX(0, queries_used - 1), updated_at = ?
+            WHERE user_id = ?;
+        """, (now, user_id))
+        await db.commit()
+
+async def get_user_quota(user_id: int, default_limit: int = 15) -> dict:
+    """Возвращает информацию о квоте пользователя."""
+    async with get_db() as db:
+        cursor = await db.execute("""
+            SELECT role, queries_used, queries_limit, last_query_at FROM users WHERE user_id = ?;
+        """, (user_id,))
+        row = await cursor.fetchone()
+        if not row:
+            return {"used": 0, "limit": default_limit, "remaining": default_limit, "is_unlimited": False}
+        
+        role = row["role"]
+        used = row["queries_used"] or 0
+        raw_limit = row["queries_limit"]
+        
+        if role == "admin" or raw_limit == -1:
+            return {"used": used, "limit": -1, "remaining": None, "is_unlimited": True}
+        
+        limit = raw_limit if raw_limit is not None else default_limit
+        remaining = max(0, limit - used)
+        return {"used": used, "limit": limit, "remaining": remaining, "is_unlimited": False}
+
+async def set_user_quota(user_id: int, new_limit: int) -> bool:
+    """Устанавливает персональный лимит пользователю (-1 = безлимит)."""
+    now = datetime.now().isoformat()
+    async with get_db() as db:
+        cursor = await db.execute("""
+            UPDATE users 
+            SET queries_limit = ?, updated_at = ?
+            WHERE user_id = ?;
+        """, (new_limit, now, user_id))
+        await db.commit()
+        return cursor.rowcount > 0
+
+async def add_user_quota(user_id: int, additional: int, default_base: int = 15) -> tuple[bool, int]:
+    """Добавляет или убавляет запросы к текущему лимиту пользователя."""
+    now = datetime.now().isoformat()
+    async with get_db() as db:
+        cursor = await db.execute("SELECT role, queries_limit FROM users WHERE user_id = ?;", (user_id,))
+        row = await cursor.fetchone()
+        if not row:
+            return False, 0
+        
+        current_limit = row["queries_limit"]
+        role = row["role"]
+        
+        if current_limit == -1 or role == "admin":
+            return True, -1
+        
+        if current_limit is not None:
+            base = current_limit
+        else:
+            base = 100 if role == "authorized" else default_base
+        
+        new_limit = max(0, base + additional)
+        
+        await db.execute("""
+            UPDATE users 
+            SET queries_limit = ?, updated_at = ?
+            WHERE user_id = ?;
+        """, (new_limit, now, user_id))
+        await db.commit()
+        return True, new_limit
+
+async def reset_user_quota(user_id: int) -> bool:
+    """Обнуляет количество использованных запросов пользователя."""
+    now = datetime.now().isoformat()
+    async with get_db() as db:
+        cursor = await db.execute("""
+            UPDATE users 
+            SET queries_used = 0, updated_at = ?
+            WHERE user_id = ?;
+        """, (now, user_id))
+        await db.commit()
+        return cursor.rowcount > 0
+
+async def get_global_daily_demo_count() -> int:
+    """Подсчитывает суммарное количество демо-запросов, совершенных гостями за сегодня (UTC)."""
+    async with get_db() as db:
+        cursor = await db.execute("""
+            SELECT COUNT(*) as count 
+            FROM users 
+            WHERE role = 'guest' 
+              AND last_query_at IS NOT NULL 
+              AND substr(last_query_at, 1, 10) = substr(datetime('now'), 1, 10);
+        """)
+        row = await cursor.fetchone()
+        return row["count"] if row else 0
+
+async def get_all_users_paged(page: int = 0, page_size: int = 5) -> tuple[list[dict], int]:
+    """
+    Возвращает страницу пользователей (для Master View в /whitelist) и общее количество.
+    Сортировка: сначала администраторы, затем по дате последней активности или созданию.
+    """
+    offset = page * page_size
+    async with get_db() as db:
+        cursor = await db.execute("SELECT COUNT(*) as total FROM users;")
+        total = (await cursor.fetchone())["total"]
+        
+        cursor = await db.execute("""
+            SELECT user_id, username, full_name, role, source, language, 
+                   queries_used, queries_limit, last_query_at, created_at
+            FROM users
+            ORDER BY 
+                CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
+                COALESCE(last_query_at, created_at) DESC
+            LIMIT ? OFFSET ?;
+        """, (page_size, offset))
+        rows = await cursor.fetchall()
+        return [dict(r) for r in rows], total
+
+async def get_user_detail(user_id: int) -> dict | None:
+    """Возвращает детальный профиль пользователя вместе со статусом последней заявки (для Detail View)."""
+    async with get_db() as db:
+        cursor = await db.execute("""
+            SELECT u.*, 
+                   ar.status as request_status,
+                   ar.company as request_company,
+                   ar.goal as request_goal,
+                   ar.created_at as request_created_at
+            FROM users u
+            LEFT JOIN access_requests ar ON u.user_id = ar.user_id
+            WHERE u.user_id = ?
+            ORDER BY ar.id DESC LIMIT 1;
+        """, (user_id,))
+        row = await cursor.fetchone()
+        return dict(row) if row else None
 
 async def revoke_user_access(user_id: int, admin_id: int) -> bool:
     """
@@ -318,7 +543,7 @@ async def revoke_user_access(user_id: int, admin_id: int) -> bool:
     now = datetime.now().isoformat()
     async with get_db() as db:
         await db.execute("""
-            UPDATE users SET role = 'guest', updated_at = ? WHERE user_id = ?;
+            UPDATE users SET role = 'guest', queries_limit = 15, updated_at = ? WHERE user_id = ?;
         """, (now, user_id))
         
         await db.execute("""
@@ -340,4 +565,4 @@ async def reset_user_completely(user_id: int, admin_id: int) -> bool:
         await db.execute("DELETE FROM access_requests WHERE user_id = ?;", (user_id,))
         await db.execute("DELETE FROM users WHERE user_id = ?;", (user_id,))
         await db.commit()
-        return True
+        return True

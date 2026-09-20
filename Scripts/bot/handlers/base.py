@@ -36,7 +36,9 @@ from Scripts.bot.utils.access_db import (
     is_admin,
     get_user_language,
     set_user_language,
-    get_or_create_user
+    get_or_create_user,
+    get_user_quota,
+    refund_quota
 )
 from Scripts.bot.config import (
     ADMIN_ID, 
@@ -44,7 +46,10 @@ from Scripts.bot.config import (
     CONFLUENCE_API_TOKEN,
     CONFLUENCE_BASE_URL,
     CONFLUENCE_PUBLIC_URL,
-    CONFLUENCE_INVITE_LINK
+    CONFLUENCE_INVITE_LINK,
+    DEFAULT_DEMO_QUOTA,
+    DEFAULT_AUTH_QUOTA,
+    EXEMPT_USER_IDS
 )
 
 router = Router()
@@ -191,14 +196,23 @@ async def send_confluence_media_batch(bot, chat_id: int, urls: list[str]):
         except Exception as e:
             logging.error(f"Ошибка отправки видео: {e}")
 
-async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, query_text: str, lang: str):
+async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, query_text: str, lang: str, quota_info: dict | None = None):
     """Единая функция выполнения RAG-пайплайна, маскирования ссылок и отправки ответа."""
-    async with ChatActionSender.typing(bot=bot, chat_id=chat_id):
-        response_text = await call_n8n_rag(
-            user_text=query_text,
-            chat_id=chat_id,
-            category="general"
-        )
+    try:
+        async with ChatActionSender.typing(bot=bot, chat_id=chat_id):
+            response_text = await call_n8n_rag(
+                user_text=query_text,
+                chat_id=chat_id,
+                category="general"
+            )
+    except Exception as e:
+        logging.error(f"Сбой выполнения RAG пайплайна для {user_id}: {e}, производим возврат квоты")
+        await refund_quota(user_id)
+        raise e
+
+    # Если n8n вернул ошибку сервиса — возвращаем квоту пользователю
+    if not response_text or "Ошибка связи с RAG-сервером" in response_text:
+        await refund_quota(user_id)
 
     log_conversation(
         user_id=user_id,
@@ -291,6 +305,17 @@ async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, 
         async with ChatActionSender.upload_photo(bot=bot, chat_id=chat_id):
             await send_confluence_media_batch(bot=bot, chat_id=chat_id, urls=media_urls)
 
+    # Предупреждение о скором исчерпании лимита (если осталось <= 2)
+    if quota_info:
+        remaining = quota_info.get("remaining")
+        limit = quota_info.get("limit")
+        if remaining is not None and remaining <= 2:
+            warn_msg = t("quota_warning_separate", lang, remaining=remaining, limit=limit)
+            try:
+                await bot.send_message(chat_id=chat_id, text=warn_msg)
+            except Exception as e:
+                logging.warning(f"Не удалось отправить сервисное предупреждение о квоте: {e}")
+
 @router.message(Command("reboot"))
 async def cmd_reboot(message: types.Message):
     """Админская команда на перезагрузку бота."""
@@ -347,25 +372,29 @@ async def handle_category_select(callback: types.CallbackQuery):
     await callback.answer()
 
 @router.callback_query(F.data.startswith("case:"))
-async def handle_case_select(callback: types.CallbackQuery):
+async def handle_case_select(callback: types.CallbackQuery, quota_info: dict | None = None):
     """Отправка выбранного эталонного кейса в RAG-пайплайн."""
     case_id = callback.data.split(":")[1]
     user = callback.from_user
     lang = await get_user_language(user.id)
-    authorized = await is_authorized(user.id)
-    
-    if not authorized:
-        await callback.answer(t("access_denied_title", lang), show_alert=True)
-        return
 
     case = get_case_by_id(case_id)
     if not case:
         await callback.answer("Кейс не найден.", show_alert=True)
         return
 
+    # Если осталось <= 2 запросов — выдаем нативный модальный алерт Telegram без спама в чат
+    if quota_info:
+        remaining = quota_info.get("remaining")
+        limit = quota_info.get("limit")
+        if remaining is not None and remaining <= 2:
+            await callback.answer(t("quota_warning_popup", lang, remaining=remaining, limit=limit), show_alert=True)
+        else:
+            await callback.answer()
+    else:
+        await callback.answer()
+
     query_text = case.question_en if lang == "en" else case.question_ru
-    await callback.answer()
-    
     prefix = "<b>Benchmark Case:</b>" if lang == "en" else "<b>Кейс:</b>"
     await callback.message.answer(f"{prefix}\n<i>«{query_text}»</i>", parse_mode="HTML")
     
@@ -375,7 +404,8 @@ async def handle_case_select(callback: types.CallbackQuery):
         user_id=user.id,
         user_name=user.full_name,
         query_text=query_text,
-        lang=lang
+        lang=lang,
+        quota_info=quota_info
     )
 
 @router.callback_query(F.data == "toggle_lang")
@@ -492,9 +522,62 @@ async def handle_media_prohibited(message: types.Message):
     )
     await message.answer(text)
 
+@router.message(Command("quota", "balance", "limit"))
+@router.callback_query(F.data == "menu_quota")
+async def cmd_quota(event: types.Message | types.CallbackQuery):
+    """Отображение карточки баланса и лимита запросов пользователя."""
+    user = event.from_user
+    lang = await get_user_language(user.id)
+    authorized = await is_authorized(user.id)
+    admin = await is_admin(user.id)
+    is_exempt = bool(user.id == ADMIN_ID or user.id in EXEMPT_USER_IDS)
+    
+    default_lim = DEFAULT_AUTH_QUOTA if authorized else DEFAULT_DEMO_QUOTA
+    q_data = await get_user_quota(user.id, default_limit=default_lim)
+    
+    used = q_data["used"]
+    limit = q_data["limit"]
+    is_unlim = q_data["is_unlimited"] or is_exempt or admin
+    
+    if is_unlim:
+        mode_str = t("mode_admin", lang) if admin else t("mode_unlimited", lang)
+        used_str = str(used)
+        limit_str = t("unlimited_text", lang)
+        rem_str = t("unlimited_text", lang)
+        cta_note = t("quota_cta_full", lang)
+    elif authorized:
+        mode_str = t("mode_authorized", lang)
+        used_str = str(used)
+        limit_str = str(limit)
+        rem_str = f"{q_data['remaining']} запросов" if lang == "ru" else f"{q_data['remaining']} queries"
+        cta_note = t("quota_cta_full", lang)
+    else:
+        mode_str = t("mode_guest", lang)
+        used_str = str(used)
+        limit_str = str(limit)
+        rem_str = f"{q_data['remaining']} запросов" if lang == "ru" else f"{q_data['remaining']} queries"
+        cta_note = t("quota_cta_request", lang)
+        
+    card_text = t(
+        "quota_info_card",
+        lang,
+        mode=mode_str,
+        used=used_str,
+        limit=limit_str,
+        remaining=rem_str,
+        cta_note=cta_note
+    )
+    
+    kb = get_main_keyboard(is_authorized=authorized, lang=lang, is_admin=admin)
+    if isinstance(event, types.CallbackQuery):
+        await event.message.answer(card_text, reply_markup=kb, parse_mode="HTML")
+        await event.answer()
+    else:
+        await event.answer(card_text, reply_markup=kb, parse_mode="HTML")
+
 @router.message(F.text)
-async def handle_message(message: types.Message):
-    """Общий обработчик произвольных текстовых вопросов (для авторизованных)."""
+async def handle_message(message: types.Message, quota_info: dict | None = None):
+    """Общий обработчик произвольных текстовых вопросов."""
     user = message.from_user
     lang = await get_user_language(user.id)
     
@@ -504,7 +587,8 @@ async def handle_message(message: types.Message):
         user_id=user.id,
         user_name=user.full_name,
         query_text=message.text,
-        lang=lang
+        lang=lang,
+        quota_info=quota_info
     )
 
 @router.message(~F.text)

@@ -3,6 +3,8 @@ AxonBot Localization Module (i18n)
 Поддерживает двуязычный интерфейс (RU / EN) для всех сообщений и кнопок.
 """
 
+from Scripts.bot.config import BOT_VERSION
+
 MESSAGES = {
     "ru": {
         # Приветствие и презентация
@@ -23,18 +25,49 @@ MESSAGES = {
         "guest_welcome_desc": (
             "Здравствуйте, <b>{name}</b>!\n\n"
             "Вы подключились к демонстрационному стенду <b>AxonBot</b> — AI BIM-эксперта по разделу Revit КР (100+ регламентов).\n\n"
-            "<b>Режим приватного B2B-тестирования</b>\n"
-            "Бот находится в режиме закрытого портфолио-доступа для BIM-менеджеров, руководителей проектных отделов и партнеров.\n\n"
-            "Нажмите кнопку ниже, чтобы отправить заявку на предоставление доступа:"
+            "Вам доступно <b>15 ознакомительных запросов</b>: вы можете выбрать готовые кейсы из каталога ниже или задать свои технические вопросы прямо в чат.\n\n"
+            "Проверить баланс запросов: /quota\n\n"
+            "Для получения персонального доступа к оригинальной базе знаний Confluence с первоисточниками регламентов отправьте заявку через /request_access."
         ),
         
-        # Экран блокировки
+        # Экран блокировки и исчерпания квоты
         "access_denied_title": "<b>Доступ ограничен</b>",
         "access_denied_text": (
             "Этот бот работает в режиме приватного B2B-тестирования.\n"
             "Для отправки произвольных вопросов в RAG-базу знаний требуется подтверждение доступа.\n\n"
             "Подайте заявку, и администратор оперативно откроет вам доступ:"
         ),
+        "quota_exhausted_title": "<b>Лимит ознакомительных запросов исчерпан</b>",
+        "quota_exhausted_text": (
+            "Вы использовали все доступные запросы ({limit} из {limit}).\n"
+            "Чтобы получить расширенный доступ к базе регламентов и первоисточникам в Confluence, отправьте заявку:"
+        ),
+        "global_daily_quota_exceeded": (
+            "Суточный лимит демонстрационного стенда исчерпан.\n"
+            "Пожалуйста, отправьте заявку на доступ (/request_access), и администратор откроет вам персональный доступ."
+        ),
+        "quota_warning_separate": (
+            "Лимит запросов: осталось {remaining} из {limit}. Проверить баланс: /quota. Получить расширенный доступ: /request_access"
+        ),
+        "quota_warning_popup": "Внимание: у вас осталось {remaining} запроса(ов) из {limit}.",
+        "single_flight_warning": "Ваш предыдущий запрос ещё обрабатывается. Пожалуйста, дождитесь ответа.",
+        "single_flight_toast": "Предыдущий кейс ещё формируется. Пожалуйста, подождите...",
+        "cooldown_warning": "Пожалуйста, подождите 3 секунды перед отправкой следующего вопроса.",
+        "quota_info_card": (
+            "<b>Лимит запросов:</b>\n"
+            "• Режим: {mode}\n"
+            "• Использовано: {used} из {limit}\n"
+            "• Доступно: {remaining}\n\n"
+            "{cta_note}"
+        ),
+        "mode_guest": "Ознакомительный доступ",
+        "mode_authorized": "Полный доступ",
+        "mode_admin": "Администратор (Безлимит)",
+        "mode_unlimited": "Безлимитный доступ",
+        "unlimited_text": "Без ограничений",
+        "quota_cta_request": "Для получения полного доступа: /request_access",
+        "quota_cta_full": "Вам открыт расширенный доступ к базе регламентов.",
+        "btn_quota": "Баланс запросов",
         "btn_request_access": "Запросить доступ к базе знаний",
         "btn_share_contact": "📱 Поделиться контактом",
         "btn_skip": "Пропустить ⏭",
@@ -43,6 +76,7 @@ MESSAGES = {
         # Пошаговая FSM-воронка заявки на доступ
         "request_step1_company": "Укажите вашу компанию и специализацию (например: СпецПроект, BIM-менеджер / проектировщик КР):",
         "request_step2_details": "Выберите цель запроса из списка кнопок ниже или напишите свой вариант сообщением (опционально):",
+        "request_step2_details_mandatory": "Выберите цель запроса из списка кнопок ниже или напишите свой вариант сообщением:",
         "request_step2_email": (
             "Укажите ваш рабочий Email, если вам потребуется доступ к оригинальной базе знаний Confluence для верификации первоисточников регламентов.\n\n"
             "Если вам достаточно тестирования AI-ассистента в Telegram, нажмите «Пропустить»."
@@ -108,7 +142,7 @@ MESSAGES = {
         "memory_cleared": "<b>Память диалога очищена.</b>\nЗадайте следующий вопрос.",
         "status_text": (
             "<b>Статус системы AxonBot</b>\n\n"
-            "• Версия пайплайна: <code>v1.9.5 (B2B Production)</code>\n"
+            f"• Версия пайплайна: <code>v{BOT_VERSION} (B2B Production)</code>\n"
             "• База знаний: <code>100+ регламентов Revit КР</code>\n"
             "• Состояние RAG-контура: <b>ONLINE</b>\n"
             "• Режим поиска: Hybrid Dense/Sparse (Qdrant + BM25)\n"
@@ -143,18 +177,49 @@ MESSAGES = {
         "guest_welcome_desc": (
             "Hello, <b>{name}</b>!\n\n"
             "You have connected to the demo instance of <b>AxonBot</b> — AI BIM Structural Expert (100+ standards).\n\n"
-            "<b>Private B2B Demo Mode</b>\n"
-            "This bot operates in an exclusive testing mode for BIM managers, engineering directors, and prospective partners.\n\n"
-            "Tap the button below to submit an access request:"
+            "You have <b>15 complimentary evaluation queries</b>: feel free to explore the benchmark cases below or ask your own technical questions directly in chat.\n\n"
+            "Check query balance: /quota\n\n"
+            "To request personal access to the original Confluence knowledge base to verify source regulations, submit an application via /request_access."
         ),
         
-        # Access lock screen
+        # Access lock screen & quota exhaustion
         "access_denied_title": "<b>Access Restricted</b>",
         "access_denied_text": (
             "This bot operates in private B2B testing mode.\n"
             "Querying the structural engineering RAG pipeline requires authorized access.\n\n"
             "Please apply for demo access, and the administrator will grant you permissions shortly:"
         ),
+        "quota_exhausted_title": "<b>Evaluation Limit Reached</b>",
+        "quota_exhausted_text": (
+            "You have used all available evaluation queries ({limit} of {limit}).\n"
+            "To get full access to the regulations database and source Confluence documentation, please submit an access request:"
+        ),
+        "global_daily_quota_exceeded": (
+            "Daily public evaluation quota for this instance is reached.\n"
+            "Please request access (/request_access), and the administrator will grant you personal access."
+        ),
+        "quota_warning_separate": (
+            "Query limit: {remaining} of {limit} remaining. Check balance: /quota. Request full access: /request_access"
+        ),
+        "quota_warning_popup": "Notice: you have {remaining} query(ies) remaining of {limit}.",
+        "single_flight_warning": "Your previous request is still being processed. Please wait for the response.",
+        "single_flight_toast": "Previous query is still processing. Please wait...",
+        "cooldown_warning": "Please wait 3 seconds before sending your next query.",
+        "quota_info_card": (
+            "<b>Query Balance:</b>\n"
+            "• Mode: {mode}\n"
+            "• Used: {used} of {limit}\n"
+            "• Remaining: {remaining}\n\n"
+            "{cta_note}"
+        ),
+        "mode_guest": "Evaluation Access",
+        "mode_authorized": "Full Access",
+        "mode_admin": "Administrator (Unlimited)",
+        "mode_unlimited": "Unlimited Access",
+        "unlimited_text": "Unlimited",
+        "quota_cta_request": "To request full access: /request_access",
+        "quota_cta_full": "You have full access to the regulations database.",
+        "btn_quota": "Query Balance",
         "btn_request_access": "Request Knowledge Base Access",
         "btn_share_contact": "📱 Share Contact",
         "btn_skip": "Skip ⏭",
@@ -163,6 +228,7 @@ MESSAGES = {
         # Step-by-step access request funnel
         "request_step1_company": "Specify your company and role (e.g.: SpecProject, BIM Manager / Structural Engineer):",
         "request_step2_details": "Select your request goal from the buttons below or type your own option (optional):",
+        "request_step2_details_mandatory": "Select your request goal from the buttons below or type your own option:",
         "request_step2_email": (
             "Enter your work email if you need direct access to the original Confluence knowledge base to verify source regulations.\n\n"
             "If you only wish to test the AI assistant in Telegram, click 'Skip'."
@@ -227,7 +293,7 @@ MESSAGES = {
         "memory_cleared": "<b>Conversation context cleared.</b>\nPlease ask your next question.",
         "status_text": (
             "<b>AxonBot System Status</b>\n\n"
-            "• Pipeline version: <code>v1.9.5 (B2B Production)</code>\n"
+            f"• Pipeline version: <code>v{BOT_VERSION} (B2B Production)</code>\n"
             "• Knowledge base: <code>100+ Revit KR Corporate Standards</code>\n"
             "• RAG Pipeline State: <b>ONLINE</b>\n"
             "• Search mode: Hybrid Dense/Sparse (Qdrant + BM25)\n"

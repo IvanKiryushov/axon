@@ -38,6 +38,20 @@ except ValueError:
 # Официальная инвайт-ссылка на пространство Confluence (задается в .env)
 CONFLUENCE_INVITE_LINK = os.getenv("CONFLUENCE_INVITE_LINK", "")
 
+# Версия приложения (SSOT)
+BOT_VERSION = os.getenv("BOT_VERSION", "2.1.0")
+
+# Настройки квот и защиты API-бюджета (Demo Quota & Budget Guard)
+DEFAULT_DEMO_QUOTA = int(os.getenv("DEFAULT_DEMO_QUOTA", 15))
+DEFAULT_AUTH_QUOTA = int(os.getenv("DEFAULT_AUTH_QUOTA", 100))
+RATE_LIMIT_COOLDOWN = float(os.getenv("RATE_LIMIT_COOLDOWN", 3.0))
+GLOBAL_DAILY_DEMO_LIMIT = int(os.getenv("GLOBAL_DAILY_DEMO_LIMIT", 150))
+
+# Список ID пользователей без ограничений (тестовые аккаунты разработчика)
+_exempt_raw = os.getenv("EXEMPT_USER_IDS", "")
+EXEMPT_USER_IDS = {int(uid.strip()) for uid in _exempt_raw.split(",") if uid.strip().isdigit()}
+
 if not BOT_TOKEN:
     print("ОШИБКА: Токен бота не найден!")
+
 

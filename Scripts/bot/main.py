@@ -26,7 +26,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from Scripts.bot.config import BOT_TOKEN, ADMIN_ID
+from Scripts.bot.config import BOT_TOKEN, ADMIN_ID, BOT_VERSION
 from Scripts.bot.handlers import base, access
 from Scripts.bot.middlewares.whitelist import WhitelistMiddleware
 from Scripts.bot.utils.access_db import init_db
@@ -102,6 +102,7 @@ async def setup_bot_profile(bot: Bot):
     commands_en = [
         BotCommand(command="start", description="Main Menu & Presentation"),
         BotCommand(command="examples", description="Benchmark Case Catalog"),
+        BotCommand(command="quota", description="Demo Quota & Balance"),
         BotCommand(command="lang", description="Switch Language (RU/EN)"),
         BotCommand(command="clear", description="Clear Conversation Memory"),
         BotCommand(command="request_access", description="Request Demo Access")
@@ -110,6 +111,7 @@ async def setup_bot_profile(bot: Bot):
     commands_ru = [
         BotCommand(command="start", description="Главное меню и презентация"),
         BotCommand(command="examples", description="Каталог кейсов"),
+        BotCommand(command="quota", description="Баланс запросов и квота"),
         BotCommand(command="lang", description="Сменить язык интерфейса (RU/EN)"),
         BotCommand(command="clear", description="Очистить контекст диалога"),
         BotCommand(command="request_access", description="Запросить доступ к базе")
@@ -126,6 +128,7 @@ async def setup_bot_profile(bot: Bot):
             admin_commands = [
                 BotCommand(command="start", description="Главное меню"),
                 BotCommand(command="examples", description="Каталог кейсов"),
+                BotCommand(command="quota", description="Баланс запросов"),
                 BotCommand(command="lang", description="Сменить язык (RU/EN)"),
                 BotCommand(command="clear", description="Очистить контекст"),
                 BotCommand(command="status", description="Статус RAG-системы"),
@@ -213,7 +216,7 @@ async def main():
     if ADMIN_ID and ADMIN_ID > 0 and not args.reboot:
         try:
             startup_msg = (
-                f"<b>AxonBot v1.9.5 запущен</b>\n\n"
+                f"<b>AxonBot v{BOT_VERSION} запущен</b>\n\n"
                 f"• PID: <code>{pid}</code>\n"
                 f"• Режим: <code>B2B Production / Whitelist</code>\n"
                 f"• База доступа: <code>axonbot.db (ONLINE)</code>\n"

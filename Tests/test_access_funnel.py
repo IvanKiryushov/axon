@@ -108,3 +108,104 @@ async def test_funnel_custom_goal_text(tmp_path):
     assert pending["company"] == "Independent BIM Consultant"
     assert pending["goal"] == "Хотим интегрировать бота в корпоративный Slack и обучить на своих чертежах"
 
+@pytest.mark.asyncio
+async def test_funnel_direct_cannot_skip_step2(tmp_path):
+    """Тест: пользователь без реферальной метки (direct) не может пропустить Шаг 2 (цель обязательна)."""
+    test_db = tmp_path / "test_direct_funnel.db"
+    access_db.set_db_path(test_db)
+    admin_id = 9990001
+    await access_db.init_db(admin_id=admin_id)
+
+    test_user_id = 111333555
+    await access_db.get_or_create_user(test_user_id, source="direct")
+
+    storage = MemoryStorage()
+    key = StorageKey(bot_id=123, chat_id=test_user_id, user_id=test_user_id)
+    state = FSMContext(storage=storage, key=key)
+
+    # Step 1
+    await state.set_state(AccessRequestState.waiting_for_company)
+    msg_step1 = MagicMock()
+    msg_step1.from_user = MagicMock(id=test_user_id, full_name="Direct Tester", username="direct_tester")
+    msg_step1.text = "Direct BIM Bureau"
+    msg_step1.answer = AsyncMock()
+
+    await process_step1_company(msg_step1, state)
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    # Проверяем, что в сообщении нет слова 'опционально'
+    step1_reply = msg_step1.answer.call_args[0][0]
+    assert "опционально" not in step1_reply.lower()
+
+    # Попытка нажать/отправить 'Пропустить ⏭'
+    msg_skip = MagicMock()
+    msg_skip.from_user = msg_step1.from_user
+    msg_skip.text = "Пропустить ⏭"
+    msg_skip.answer = AsyncMock()
+
+    await process_step2_details(msg_skip, state)
+    # Состояние НЕ должно сброситься, заявка НЕ должна быть создана
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    assert await access_db.get_pending_request_by_user(test_user_id) is None
+    assert msg_skip.answer.call_count == 1
+
+    # Теперь выбираем цель
+    msg_goal = MagicMock()
+    msg_goal.from_user = msg_step1.from_user
+    msg_goal.text = "Внедрение в компании"
+    msg_goal.answer = AsyncMock()
+    msg_goal.bot = MagicMock()
+    msg_goal.bot.send_message = AsyncMock()
+
+    await process_step2_details(msg_goal, state)
+    assert await state.get_state() is None
+
+    req = await access_db.get_pending_request_by_user(test_user_id)
+    assert req is not None
+    assert req["company"] == "Direct BIM Bureau"
+    assert req["goal"] == "Внедрение в компании"
+
+@pytest.mark.asyncio
+async def test_funnel_referral_can_skip_step2(tmp_path):
+    """Тест: пользователь с внешнего канала (upwork) может пропустить Шаг 2."""
+    test_db = tmp_path / "test_ref_funnel.db"
+    access_db.set_db_path(test_db)
+    admin_id = 9990001
+    await access_db.init_db(admin_id=admin_id)
+
+    test_user_id = 222444666
+    await access_db.get_or_create_user(test_user_id, source="upwork")
+
+    storage = MemoryStorage()
+    key = StorageKey(bot_id=123, chat_id=test_user_id, user_id=test_user_id)
+    state = FSMContext(storage=storage, key=key)
+
+    # Step 1
+    await state.set_state(AccessRequestState.waiting_for_company)
+    msg_step1 = MagicMock()
+    msg_step1.from_user = MagicMock(id=test_user_id, full_name="Upwork Client", username="upwork_client")
+    msg_step1.text = "US Structural Engineering Firm"
+    msg_step1.answer = AsyncMock()
+
+    await process_step1_company(msg_step1, state)
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    # Для рефералов разрешено и помечено как опционально
+    step1_reply = msg_step1.answer.call_args[0][0]
+    assert "опционально" in step1_reply.lower()
+
+    # Нажатие 'Skip ⏭'
+    msg_skip = MagicMock()
+    msg_skip.from_user = msg_step1.from_user
+    msg_skip.text = "Skip ⏭"
+    msg_skip.answer = AsyncMock()
+    msg_skip.bot = MagicMock()
+    msg_skip.bot.send_message = AsyncMock()
+
+    await process_step2_details(msg_skip, state)
+    assert await state.get_state() is None
+
+    req = await access_db.get_pending_request_by_user(test_user_id)
+    assert req is not None
+    assert req["company"] == "US Structural Engineering Firm"
+    assert req["goal"] == ""
+
+
