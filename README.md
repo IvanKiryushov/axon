@@ -35,7 +35,8 @@ flowchart LR
 
 ### 1. Cross-Lingual Retrieval-Augmented Generation
 - **Native Dual-Language Capability**: International clients can submit complex technical questions in **English**, while the underlying enterprise knowledge base is indexed in **Russian**.
-- **Strict Cyrillic Verbatim Constraint**: Preserves proprietary Cyrillic family identifiers (`201_Свая...`, `266_АрмСтены...`), shared parameters (`ADSK_...`, `231_Отверстие_...`), and structural worksets in their exact CAD format without broken translations.
+- **Strict Cyrillic Verbatim Constraint**: Preserves proprietary Cyrillic Revit family identifiers (`201_Свая...`, `266_АрмСтены...`), shared parameters (`ADSK_...`, `231_Отверстие_...`), and structural worksets literally without translation artifacts.
+- **Visual SOP & Media Delivery**: Pairs technical answers with visual instructions embedded in manuals (UI panel screenshots, viewport schematics, step-by-step animated GIFs, and video clips) along with contextual attachment captions.
 
 ### 2. Multi-Criteria Verification & Benchmarking
 - Evaluated against a rigorous suite of **over 60 automated benchmark scenarios** covering complex reinforcement detailing, pile fields, in-place modeling, and out-of-scope boundary testing via an asynchronous **LLM-as-a-Judge** pipeline.
@@ -48,7 +49,7 @@ flowchart LR
 
 ### 3. OpSec & Access Control Architecture
 - **Aiogram 3 Whitelist Middleware**: Protects proprietary enterprise intellectual property. Guests see a presentation card and submit access applications.
-- **Deep Linking Lead Tracking**: Captures lead sources (`/start github`, `/start upwork`, `/start direct`) and alerts administrators with one-click approval inline keyboards.
+- **Admin Approval Workflow**: Delivers incoming access requests directly to administrators with instant one-click approval inline keyboards.
 - **Encapsulated Content Delivery**: Atlassian API credentials remain strictly on backend servers; media files and animated SOPs are transcoded and proxied in-memory without disk leakage.
 
 ---
