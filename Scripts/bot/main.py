@@ -22,15 +22,23 @@ import argparse
 import ctypes
 from datetime import datetime
 from aiogram import Bot, Dispatcher
-from aiogram.types import BotCommand, BotCommandScopeDefault
+from aiogram.types import BotCommand, BotCommandScopeDefault, ErrorEvent
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+import html
+import traceback
 
-from Scripts.bot.config import BOT_TOKEN, ADMIN_ID, BOT_VERSION
+from Scripts.bot.config import BOT_TOKEN, ADMIN_ID, BOT_VERSION, CONTROL_CHAT_ID
 from Scripts.bot.handlers import base, access
 from Scripts.bot.middlewares.whitelist import WhitelistMiddleware
 from Scripts.bot.utils.access_db import init_db
 from Scripts.bot.utils.conversation_logger import set_session_path
+from Scripts.bot.utils.alert_manager import (
+    setup_crash_reporter, 
+    send_ops_event, 
+    send_critical_alert,
+    run_qdrant_keepalive_loop
+)
 
 PID_FILE = BOT_DIR / "data" / "axonbot.pid"
 
@@ -136,6 +144,11 @@ async def setup_bot_profile(bot: Bot):
                 BotCommand(command="stats", description="Аналитика лидов")
             ]
             await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=ADMIN_ID))
+            if CONTROL_CHAT_ID:
+                try:
+                    await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=CONTROL_CHAT_ID))
+                except Exception:
+                    pass
 
         # 3. Регистрация описания до нажатия Start (дефолт + RU)
         await bot.set_my_description(description=DESC_EN)
@@ -194,7 +207,25 @@ async def main():
     dp.message.middleware(whitelist_mw)
     dp.callback_query.middleware(whitelist_mw)
 
-    # 6. Подключение роутеров
+    # 6. Подключение роутеров и глобального перехватчика ошибок Aiogram (@dp.error)
+    @dp.error()
+    async def global_aiogram_error_handler(event: ErrorEvent):
+        exc = event.exception
+        logging.exception(f"Необработанное исключение в Aiogram Dispatcher: {exc}")
+        tb_str = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        safe_err = html.escape(str(exc))
+        safe_tb = html.escape(tb_str[-1500:])
+        details = (
+            f"<b>Exception:</b> <code>{type(exc).__name__}</code>\n"
+            f"<b>Detail:</b> <code>{safe_err}</code>\n\n"
+            f"<b>Traceback:</b>\n<pre>{safe_tb}</pre>"
+        )
+        try:
+            await send_critical_alert(bot=bot, title="Необработанное исключение в хендлере Aiogram", details=details)
+        except Exception:
+            pass
+        return True
+
     dp.include_router(access.router)
     dp.include_router(base.router)
 
@@ -212,25 +243,27 @@ async def main():
         except Exception as e:
             logging.error(f"Не удалось отправить отчет о перезагрузке: {e}")
 
-    # 10. Уведомление администратора о старте сервиса
-    if ADMIN_ID and ADMIN_ID > 0 and not args.reboot:
+    # 10. Тихое уведомление в топик AxonBot (Control Room) о старте сервиса
+    if not args.reboot:
         try:
             startup_msg = (
-                f"<b>AxonBot v{BOT_VERSION} запущен</b>\n\n"
+                f"🟢 <b>AxonBot v{BOT_VERSION} запущен</b>\n\n"
                 f"• PID: <code>{pid}</code>\n"
                 f"• Режим: <code>B2B Production / Whitelist</code>\n"
                 f"• База доступа: <code>axonbot.db (ONLINE)</code>\n"
                 f"• Время старта: <code>{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code>"
             )
-            await bot.send_message(ADMIN_ID, startup_msg, parse_mode="HTML")
+            await send_ops_event(bot=bot, text=startup_msg, silent=True, parse_mode="HTML")
         except Exception as e:
-            logging.warning(f"Не удалось отправить уведомление о запуске админу: {e}")
+            logging.warning(f"Не удалось отправить уведомление о запуске в Control Room: {e}")
 
     # 11. Запуск Long Polling
+    asyncio.create_task(run_qdrant_keepalive_loop(bot))
     print(f"AxonBot запущен! Сессия: {session_id}, PID: {pid}")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
+    setup_crash_reporter("AxonBot_Service")
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

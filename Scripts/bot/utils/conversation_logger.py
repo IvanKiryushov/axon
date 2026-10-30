@@ -19,6 +19,7 @@ def log_conversation(user_id: int, user_name: str, question: str, answer: str, c
     Записывает диалог в архив (JSONL) текущей сессии.
     """
     log_file = os.path.join(_current_session_path, "conversations.jsonl")
+    os.makedirs(_current_session_path, exist_ok=True)
 
     log_entry = {
         "timestamp": datetime.now().isoformat(sep=" ", timespec="seconds"),

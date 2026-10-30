@@ -176,7 +176,20 @@ async def test_source_overwrite_for_guests(tmp_path):
     user_final = await access_db.get_or_create_user(user_id=user_id)
     assert user_final["source"] == "linkedin"
 
-    # 4. Невалидный источник сбрасывается в direct
+    # 4. Проверка новых каналов: landing и deck
+    await access_db.update_user_source(user_id, "landing")
+    user_landing = await access_db.get_or_create_user(user_id=user_id)
+    assert user_landing["source"] == "landing"
+
+    await access_db.update_user_source(user_id, "deck")
+    user_deck = await access_db.get_or_create_user(user_id=user_id)
+    assert user_deck["source"] == "deck"
+
+    await access_db.update_user_source(user_id, "hh")
+    user_hh = await access_db.get_or_create_user(user_id=user_id)
+    assert user_hh["source"] == "hh"
+
+    # 5. Невалидный источник сбрасывается в direct
     await access_db.update_user_source(user_id, "unknown_spam_channel")
     user_direct = await access_db.get_or_create_user(user_id=user_id)
     assert user_direct["source"] == "direct"

@@ -208,4 +208,113 @@ async def test_funnel_referral_can_skip_step2(tmp_path):
     assert req["company"] == "US Structural Engineering Firm"
     assert req["goal"] == ""
 
+@pytest.mark.asyncio
+async def test_funnel_landing_mandatory_step2(tmp_path):
+    """Тест: для пользователей с лендинга (landing) Шаг 2 (цель теста) строго обязателен."""
+    test_db = tmp_path / "test_landing_funnel.db"
+    access_db.set_db_path(test_db)
+    admin_id = 9990001
+    await access_db.init_db(admin_id=admin_id)
+
+    test_user_id = 333555777
+    await access_db.get_or_create_user(test_user_id, source="landing")
+
+    storage = MemoryStorage()
+    key = StorageKey(bot_id=123, chat_id=test_user_id, user_id=test_user_id)
+    state = FSMContext(storage=storage, key=key)
+
+    await state.set_state(AccessRequestState.waiting_for_company)
+    msg_step1 = MagicMock()
+    msg_step1.from_user = MagicMock(id=test_user_id, full_name="Landing Visitor", username="landing_user")
+    msg_step1.text = "Acme BIM Studio"
+    msg_step1.answer = AsyncMock()
+
+    await process_step1_company(msg_step1, state)
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    # Проверяем, что цель теста обязательна и нет слова 'опционально'
+    step1_reply = msg_step1.answer.call_args[0][0]
+    assert "опционально" not in step1_reply.lower()
+
+    # Попытка нажать/отправить 'Пропустить ⏭'
+    msg_skip = MagicMock()
+    msg_skip.from_user = msg_step1.from_user
+    msg_skip.text = "Пропустить ⏭"
+    msg_skip.answer = AsyncMock()
+
+    await process_step2_details(msg_skip, state)
+    # Состояние не сбрасывается — цель обязательна
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    assert await access_db.get_pending_request_by_user(test_user_id) is None
+
+    # Заполняем цель
+    msg_goal = MagicMock()
+    msg_goal.from_user = msg_step1.from_user
+    msg_goal.text = "Тестирование RAG на корпоративных регламентах"
+    msg_goal.answer = AsyncMock()
+    msg_goal.bot = MagicMock()
+    msg_goal.bot.send_message = AsyncMock()
+
+    await process_step2_details(msg_goal, state)
+    assert await state.get_state() is None
+
+    req = await access_db.get_pending_request_by_user(test_user_id)
+    assert req is not None
+    assert req["source"] == "landing"
+    assert req["company"] == "Acme BIM Studio"
+    assert req["goal"] == "Тестирование RAG на корпоративных регламентах"
+
+@pytest.mark.asyncio
+async def test_funnel_hh_mandatory_step2_and_hiring_goal(tmp_path):
+    """Тест: для соискателей/рекрутеров с hh (HeadHunter) Шаг 2 обязателен, цель 'Сотрудничество / Найм'."""
+    test_db = tmp_path / "test_hh_funnel.db"
+    access_db.set_db_path(test_db)
+    admin_id = 9990001
+    await access_db.init_db(admin_id=admin_id)
+
+    test_user_id = 444666888
+    await access_db.get_or_create_user(test_user_id, source="hh", language="ru")
+
+    storage = MemoryStorage()
+    key = StorageKey(bot_id=123, chat_id=test_user_id, user_id=test_user_id)
+    state = FSMContext(storage=storage, key=key)
+
+    await state.set_state(AccessRequestState.waiting_for_company)
+    msg_step1 = MagicMock()
+    msg_step1.from_user = MagicMock(id=test_user_id, full_name="HH Recruiter", username="hh_recruiter")
+    msg_step1.text = "ГлавПроект, Руководитель BIM"
+    msg_step1.answer = AsyncMock()
+
+    await process_step1_company(msg_step1, state)
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    step1_reply = msg_step1.answer.call_args[0][0]
+    assert "опционально" not in step1_reply.lower()
+
+    # Попытка нажать/отправить 'Пропустить ⏭'
+    msg_skip = MagicMock()
+    msg_skip.from_user = msg_step1.from_user
+    msg_skip.text = "Пропустить ⏭"
+    msg_skip.answer = AsyncMock()
+
+    await process_step2_details(msg_skip, state)
+    # Состояние не сбрасывается — цель обязательна
+    assert await state.get_state() == AccessRequestState.waiting_for_details.state
+    assert await access_db.get_pending_request_by_user(test_user_id) is None
+
+    # Выбираем обновленную кнопку "Сотрудничество / Найм"
+    msg_goal = MagicMock()
+    msg_goal.from_user = msg_step1.from_user
+    msg_goal.text = "Сотрудничество / Найм"
+    msg_goal.answer = AsyncMock()
+    msg_goal.bot = MagicMock()
+    msg_goal.bot.send_message = AsyncMock()
+
+    await process_step2_details(msg_goal, state)
+    assert await state.get_state() is None
+
+    req = await access_db.get_pending_request_by_user(test_user_id)
+    assert req is not None
+    assert req["source"] == "hh"
+    assert req["company"] == "ГлавПроект, Руководитель BIM"
+    assert req["goal"] == "Сотрудничество / Найм"
+
 

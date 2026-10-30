@@ -35,11 +35,30 @@ try:
 except ValueError:
     ADMIN_ID = 0
 
+# Настройки центрального хаба мониторинга (Control Room Supergroup & Topics)
+try:
+    CONTROL_CHAT_ID = int(os.getenv("CONTROL_CHAT_ID", -1004304196600))
+except ValueError:
+    CONTROL_CHAT_ID = -1004304196600
+
+try:
+    TOPIC_AXONBOT_ID = int(os.getenv("TOPIC_AXONBOT_ID", 13))
+except ValueError:
+    TOPIC_AXONBOT_ID = 13
+
+try:
+    TOPIC_CRITICAL_ID = int(os.getenv("TOPIC_CRITICAL_ID", 4))
+except ValueError:
+    TOPIC_CRITICAL_ID = 4
+
+# Резервный токен сервисного бота для алертов (если @bim_axonbot не в супергруппе)
+ALERT_BOT_TOKEN = os.getenv("ALERT_BOT_TOKEN", "").strip()
+
 # Официальная инвайт-ссылка на пространство Confluence (задается в .env)
 CONFLUENCE_INVITE_LINK = os.getenv("CONFLUENCE_INVITE_LINK", "")
 
 # Версия приложения (SSOT)
-BOT_VERSION = os.getenv("BOT_VERSION", "2.1.0")
+BOT_VERSION = os.getenv("BOT_VERSION", "2.2.1")
 
 # Настройки квот и защиты API-бюджета (Demo Quota & Budget Guard)
 DEFAULT_DEMO_QUOTA = int(os.getenv("DEFAULT_DEMO_QUOTA", 15))

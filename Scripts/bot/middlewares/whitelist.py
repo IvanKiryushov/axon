@@ -26,10 +26,12 @@ from Scripts.bot.utils.access_db import (
     set_user_language,
     update_user_source,
     check_and_consume_quota,
-    get_global_daily_demo_count
+    get_global_daily_demo_count,
+    EXTERNAL_CHANNELS
 )
 from Scripts.bot.keyboards.main_menu import get_quota_exhausted_keyboard
 from Scripts.bot.utils.i18n import t
+from Scripts.bot.utils.alert_manager import send_ops_event, send_critical_alert
 
 PUBLIC_COMMANDS = {
     "/start", "/help", "/examples", "/request_access", 
@@ -39,7 +41,7 @@ PUBLIC_CALLBACK_PREFIXES = {
     "set_lang:", "request_access", "cat:", "menu", "help", 
     "wlu:", "wlp:", "wl_noop", "qa:", "qm:", "qd:", "qu:", "qr:", "wlr:", "wld:"
 }
-VALID_CHANNELS = {"github", "upwork", "linkedin"}
+VALID_CHANNELS = EXTERNAL_CHANNELS
 
 class WhitelistMiddleware(BaseMiddleware):
     def __init__(self):
@@ -60,11 +62,12 @@ class WhitelistMiddleware(BaseMiddleware):
         # 1. Извлечение Deep Link источника при старте (/start <ref>)
         deep_link_source = "direct"
         is_start_cmd = isinstance(event, types.Message) and bool(event.text) and event.text.startswith("/start")
+        ref_candidate = ""
         if is_start_cmd:
             parts = event.text.split(maxsplit=1)
             if len(parts) > 1:
                 ref_candidate = parts[1].strip().lower()
-                for ch in VALID_CHANNELS:
+                for ch in sorted(VALID_CHANNELS, key=len, reverse=True):
                     if ref_candidate.startswith(ch):
                         deep_link_source = ch
                         break
@@ -73,7 +76,10 @@ class WhitelistMiddleware(BaseMiddleware):
         client_lang = (user.language_code or "ru").lower()
         default_lang = "ru" if client_lang.startswith(("ru", "be", "uk")) else "en"
         if deep_link_source in VALID_CHANNELS:
-            default_lang = "en"
+            if deep_link_source == "hh" or ref_candidate.endswith(("_ru", "ru")):
+                default_lang = "ru"
+            else:
+                default_lang = "en"
 
         # 3. Синхронизация профиля в SQLite
         user_record = await get_or_create_user(
@@ -88,12 +94,28 @@ class WhitelistMiddleware(BaseMiddleware):
         admin = await is_admin(user.id)
         is_exempt = bool(user.id == ADMIN_ID or user.id in EXEMPT_USER_IDS)
 
-        # Если гость пришел по внешнему каналу — принудительно фиксируем источник и английский язык
+        # Если гость пришел по внешнему каналу — принудительно фиксируем источник и язык
         if not authorized and not admin and deep_link_source in VALID_CHANNELS:
             await update_user_source(user.id, deep_link_source)
-            await set_user_language(user.id, "en")
+            await set_user_language(user.id, default_lang)
 
         user_lang = await get_user_language(user.id)
+
+        # 3.1. Тихое уведомление в Control Room при регистрации нового уникального гостя
+        if user_record.get("_is_new") and user.id != ADMIN_ID:
+            uname_str = f"@{user.username}" if user.username else "не указан"
+            bot_instance = getattr(event, "bot", None) or data.get("bot")
+            new_user_msg = (
+                f"👤 <b>Новый пользователь в AxonBot</b>\n\n"
+                f"• <b>Имя:</b> {user.full_name} ({uname_str})\n"
+                f"• <b>Telegram ID:</b> <code>{user.id}</code>\n"
+                f"• <b>Источник (Deep Link):</b> <code>{user_record.get('source', deep_link_source)}</code>\n"
+                f"• <b>Язык:</b> <code>{user_lang.upper()}</code>"
+            )
+            try:
+                await send_ops_event(bot=bot_instance, text=new_user_msg, silent=True)
+            except Exception:
+                pass
 
         # Пробрасываем контекст в data для хэндлеров
         data["user_lang"] = user_lang
@@ -174,6 +196,18 @@ class WhitelistMiddleware(BaseMiddleware):
                     elif isinstance(event, types.CallbackQuery):
                         await event.answer(t("quota_exhausted_title", user_lang), show_alert=True)
                         await event.message.answer(exhausted_text, reply_markup=get_quota_exhausted_keyboard(user_lang), parse_mode="HTML")
+                    try:
+                        bot_instance = getattr(event, "bot", None) or data.get("bot")
+                        await send_critical_alert(
+                            bot=bot_instance,
+                            title="Сработал глобальный суточный стоп-кран демо-стенда",
+                            details=(
+                                f"• <b>Суточный расход демо-квоты:</b> <code>{daily_count} / {GLOBAL_DAILY_DEMO_LIMIT}</code>\n"
+                                f"• <b>Заблокирован пользователь:</b> {user.full_name} (<code>{user.id}</code>)"
+                            )
+                        )
+                    except Exception:
+                        pass
                     return
 
             # 5.4. Атомарная проверка и резервация квоты в SQLite WAL
@@ -186,7 +220,7 @@ class WhitelistMiddleware(BaseMiddleware):
             )
 
             if not allowed:
-                # Квота исчерпана
+                # Квота исчерпана (горячий лид — уведомляем со звуком в топик AxonBot)
                 exhausted_title = t("quota_exhausted_title", user_lang)
                 exhausted_msg = f"{exhausted_title}\n\n{t('quota_exhausted_text', user_lang, limit=limit)}"
                 if isinstance(event, types.Message):
@@ -194,6 +228,19 @@ class WhitelistMiddleware(BaseMiddleware):
                 elif isinstance(event, types.CallbackQuery):
                     await event.answer(exhausted_title, show_alert=True)
                     await event.message.answer(exhausted_msg, reply_markup=get_quota_exhausted_keyboard(user_lang), parse_mode="HTML")
+                try:
+                    bot_instance = getattr(event, "bot", None) or data.get("bot")
+                    uname_str = f"@{user.username}" if user.username else "не указан"
+                    hot_lead_msg = (
+                        f"🔥 <b>Лид исчерпал демо-квоту ({used}/{limit})</b>\n\n"
+                        f"• <b>Пользователь:</b> {user.full_name} ({uname_str})\n"
+                        f"• <b>Telegram ID:</b> <code>{user.id}</code>\n"
+                        f"• <b>Источник:</b> <code>{user_record.get('source', 'direct')}</code>\n"
+                        f"• <b>Быстрое начисление:</b> <code>/add_quota {user.id} 15</code>"
+                    )
+                    await send_ops_event(bot=bot_instance, text=hot_lead_msg, silent=False)
+                except Exception:
+                    pass
                 return
 
             # Пробрасываем актуальную информацию о квоте в data для хэндлера

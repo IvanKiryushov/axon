@@ -51,9 +51,11 @@ from Scripts.bot.config import (
     DEFAULT_AUTH_QUOTA,
     EXEMPT_USER_IDS
 )
+from Scripts.bot.utils.alert_manager import send_ops_event, send_critical_alert
 
 router = Router()
 MEDIA_CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "media_cache"
+_consecutive_refusals: int = 0
 
 def build_welcome_text(user_name: str, lang: str, authorized: bool) -> str:
     """Генерирует приветственное сообщение с учетом прав доступа и инвайт-ссылки Confluence."""
@@ -149,6 +151,7 @@ async def send_confluence_media_batch(bot, chat_id: int, urls: list[str]):
     photos_to_group = []
     animations = []
     videos = []
+    failed_urls = []
 
     async with aiohttp.ClientSession(auth=auth) as session:
         for url in urls[:20]:
@@ -166,6 +169,22 @@ async def send_confluence_media_batch(bot, chat_id: int, urls: list[str]):
                 else:
                     input_file = BufferedInputFile(data, filename=filename)
                     photos_to_group.append((input_file, filename, dims))
+            else:
+                failed_urls.append(url)
+
+    if failed_urls:
+        try:
+            await send_critical_alert(
+                bot=bot,
+                title="Сбой загрузки медиавложений из Confluence",
+                details=(
+                    f"• <b>Не удалось скачать файлов:</b> <code>{len(failed_urls)}</code>\n"
+                    f"• <b>Первый проблемный URL:</b> <code>{failed_urls[0]}</code>\n"
+                    f"• <b>Чат получателя:</b> <code>{chat_id}</code>"
+                )
+            )
+        except Exception:
+            pass
 
     if photos_to_group:
         for i in range(0, len(photos_to_group), 10):
@@ -196,8 +215,9 @@ async def send_confluence_media_batch(bot, chat_id: int, urls: list[str]):
         except Exception as e:
             logging.error(f"Ошибка отправки видео: {e}")
 
-async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, query_text: str, lang: str, quota_info: dict | None = None):
+async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, query_text: str, lang: str, quota_info: dict | None = None, is_benchmark: bool = False):
     """Единая функция выполнения RAG-пайплайна, маскирования ссылок и отправки ответа."""
+    global _consecutive_refusals
     try:
         async with ChatActionSender.typing(bot=bot, chat_id=chat_id):
             response_text = await call_n8n_rag(
@@ -208,11 +228,42 @@ async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, 
     except Exception as e:
         logging.error(f"Сбой выполнения RAG пайплайна для {user_id}: {e}, производим возврат квоты")
         await refund_quota(user_id)
+        try:
+            await send_critical_alert(
+                bot=bot,
+                title="Исключение при вызове RAG-пайплайна (n8n)",
+                details=(
+                    f"• <b>Пользователь:</b> {user_name} (<code>{user_id}</code>)\n"
+                    f"• <b>Вопрос:</b> {query_text}\n"
+                    f"• <b>Ошибка:</b> <code>{e}</code>"
+                )
+            )
+        except Exception:
+            pass
         raise e
 
-    # Если n8n вернул ошибку сервиса — возвращаем квоту пользователю
-    if not response_text or "Ошибка связи с RAG-сервером" in response_text:
+    # Если n8n вернул ошибку сервиса — возвращаем квоту пользователю и шлем алерт в Critical Alerts
+    n8n_error_markers = (
+        "Ошибка связи с RAG-сервером",
+        "Ошибка сервера n8n",
+        "Не удалось связаться с базой знаний",
+        "Ответ от ИИ не получен"
+    )
+    if not response_text or any(m in response_text for m in n8n_error_markers):
         await refund_quota(user_id)
+        try:
+            await send_critical_alert(
+                bot=bot,
+                title="Сбой или пустой ответ RAG-сервера (n8n)",
+                details=(
+                    f"• <b>Пользователь:</b> {user_name} (<code>{user_id}</code>)\n"
+                    f"• <b>Вопрос:</b> {query_text}\n"
+                    f"• <b>Ответ n8n:</b> <code>{response_text or 'EMPTY'}</code>\n"
+                    f"• <b>Статус квоты:</b> возвращена (+1 refund)"
+                )
+            )
+        except Exception:
+            pass
 
     log_conversation(
         user_id=user_id,
@@ -221,23 +272,27 @@ async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, 
         answer=response_text
     )
 
-    # Тихое уведомление администратору об активности пользователя (если спрашивает не сам админ)
-    if ADMIN_ID and user_id != ADMIN_ID:
+    # Тихое уведомление в топик AxonBot (Control Room) об активности пользователя (если спрашивает не сам админ)
+    if user_id != ADMIN_ID:
         try:
+            quota_str = ""
+            if quota_info and not quota_info.get("is_unlimited"):
+                quota_str = f"\n• <b>Квота:</b> <code>{quota_info.get('used')}/{quota_info.get('limit')}</code>"
             admin_notify = (
-                f"<b>Активность пользователя:</b>\n"
+                f"💬 <b>Активность пользователя:</b>\n"
                 f"• <b>Пользователь:</b> {user_name} (ID: <code>{user_id}</code>)\n"
-                f"• <b>Вопрос:</b> {query_text}\n"
+                f"• <b>Вопрос:</b> {query_text}"
+                f"{quota_str}\n"
                 f"• <b>Время:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
             )
-            await bot.send_message(
-                chat_id=ADMIN_ID,
+            await send_ops_event(
+                bot=bot,
                 text=admin_notify,
-                parse_mode="HTML",
-                disable_notification=True
+                silent=True,
+                parse_mode="HTML"
             )
         except Exception as e:
-            logging.warning(f"Не удалось отправить тихое уведомление администратору: {e}")
+            logging.warning(f"Не удалось отправить тихое уведомление об активности: {e}")
 
     # Поиск ссылок на медиафайлы
     raw_urls = re.findall(r"https?://[^\s<>'\"\)]+\.(?:png|jpe?g|gif|webp|svg|mp4|mov|webm)(?:\?[^\s<>'\"\)]*)?", response_text, re.IGNORECASE)
@@ -288,9 +343,45 @@ async def execute_rag_pipeline(bot, chat_id: int, user_id: int, user_name: str, 
         "bim department",
         "any deviations or custom solutions must be approved"
     ]
-    if any(rm in clean_text.lower() for rm in refusal_markers):
+    is_refusal = any(rm in clean_text.lower() for rm in refusal_markers)
+    if is_refusal:
         clean_text = re.sub(r'📌\s*<b>(?:Источник|Source):</b>\s*<a\s+href=[^>]+>[^<]+</a>', '', clean_text, flags=re.IGNORECASE).strip()
         clean_text = re.sub(r'📌\s*(?:Источник|Source):[^\n]+', '', clean_text, flags=re.IGNORECASE).strip()
+        _consecutive_refusals += 1
+
+        # Детекция спящего режима Qdrant Cloud (Hibernation Guard)
+        if is_benchmark:
+            try:
+                await send_critical_alert(
+                    bot=bot,
+                    title="Возможная гибернация Qdrant / Пустой ретривал RAG",
+                    details=(
+                        f"• <b>Тип события:</b> Отказ на эталонный кейс из каталога (Benchmark Refusal)\n"
+                        f"• <b>Вопрос:</b> <i>«{query_text}»</i>\n"
+                        f"• <b>Пользователь:</b> {user_name} (<code>{user_id}</code>)\n"
+                        f"• <b>Фрагмент ответа:</b> <code>{clean_text[:160]}...</code>\n\n"
+                        f"⚠️ <b>Диагноз:</b> Эталонный кейс обязан находить регламент. Пустой ответ указывает на спящий режим Qdrant Cloud (Free Tier) или сбой эмбеддингов в n8n!\n"
+                        f"👉 <b>Действие:</b> Проверьте статус кластера Qdrant Cloud."
+                    )
+                )
+            except Exception as e:
+                logging.error(f"Не удалось отправить алерт о гибернации: {e}")
+        elif _consecutive_refusals >= 3:
+            try:
+                await send_critical_alert(
+                    bot=bot,
+                    title="Серия отказов RAG подряд (3+)",
+                    details=(
+                        f"• <b>Количество отказов подряд:</b> <code>{_consecutive_refusals}</code>\n"
+                        f"• <b>Последний вопрос:</b> <i>«{query_text}»</i>\n"
+                        f"• <b>Пользователь:</b> {user_name} (<code>{user_id}</code>)\n\n"
+                        f"⚠️ <b>Диагноз:</b> Возможно падение ретривала, отсутствие контекста в Qdrant или отвал эмбеддингов."
+                    )
+                )
+            except Exception as e:
+                logging.error(f"Не удалось отправить алерт о серии отказов: {e}")
+    else:
+        _consecutive_refusals = 0
 
     clean_text = re.sub(r'\n{3,}', '\n\n', clean_text).strip()
 
@@ -399,7 +490,7 @@ async def handle_case_select(callback: types.CallbackQuery, quota_info: dict | N
     await callback.message.answer(f"{prefix}\n<i>«{query_text}»</i>", parse_mode="HTML")
     
     await execute_rag_pipeline(
-        bot=callback.bot,
+        bot=callback.bot, is_benchmark=True,
         chat_id=callback.message.chat.id,
         user_id=user.id,
         user_name=user.full_name,

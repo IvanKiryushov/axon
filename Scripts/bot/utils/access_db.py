@@ -91,6 +91,10 @@ async def init_db(admin_id: int = 0):
             await db.commit()
             logging.info(f"Администратор {admin_id} зарегистрирован в базе данных.")
 
+EXTERNAL_CHANNELS = {"github", "upwork", "linkedin", "landing", "deck", "presentation", "slides", "hh"}
+VALID_SOURCES = EXTERNAL_CHANNELS | {"direct", "system"}
+SKIP_STEP2_CHANNELS = {"github", "upwork", "linkedin"}
+
 async def get_or_create_user(
     user_id: int,
     username: str = "",
@@ -105,7 +109,7 @@ async def get_or_create_user(
         row = await cursor.fetchone()
         if row:
             # Для гостей (guest) при явном переходе по внешнему каналу обновляем источник
-            new_source = source if (source in ("github", "upwork", "linkedin") and row["role"] == "guest") else row["source"]
+            new_source = source if (source in EXTERNAL_CHANNELS and row["role"] == "guest") else row["source"]
             await db.execute("""
                 UPDATE users 
                 SET username = COALESCE(?, username), 
@@ -118,10 +122,12 @@ async def get_or_create_user(
             
             cursor = await db.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
             updated_row = await cursor.fetchone()
-            return dict(updated_row)
+            res_dict = dict(updated_row)
+            res_dict["_is_new"] = False
+            return res_dict
         
         # Если пользователя нет — регистрируем как гостя
-        clean_source = source if source in ("github", "upwork", "linkedin", "direct", "system") else "direct"
+        clean_source = source if source in VALID_SOURCES else "direct"
         await db.execute("""
             INSERT INTO users (user_id, username, full_name, role, source, language, created_at, updated_at)
             VALUES (?, ?, ?, 'guest', ?, ?, ?, ?);
@@ -130,9 +136,9 @@ async def get_or_create_user(
         
         cursor = await db.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
         new_row = await cursor.fetchone()
-        return dict(new_row)
-
-VALID_SOURCES = {"github", "upwork", "linkedin", "direct", "system"}
+        res_dict = dict(new_row)
+        res_dict["_is_new"] = True
+        return res_dict
 
 async def update_user_source(user_id: int, source: str) -> bool:
     """Обновляет источник перехода пользователя."""

@@ -86,7 +86,8 @@ MESSAGES = {
         
         # Кнопки целей для Шага 2 (Цель и контакт)
         "goal_company": "Внедрение в компании",
-        "goal_upwork": "Поиск подрядчика на Upwork",
+        "goal_hiring": "Сотрудничество / Найм",
+        "goal_upwork": "Сотрудничество / Найм",
         "goal_testing": "Тестирование RAG",
         "goal_other": "Другое",
         
@@ -238,7 +239,8 @@ MESSAGES = {
         
         # Goal options for Step 2 (Goal & Contact)
         "goal_company": "Company Implementation",
-        "goal_upwork": "Hiring Contractor on Upwork",
+        "goal_hiring": "Partnership / Hiring",
+        "goal_upwork": "Partnership / Hiring",
         "goal_testing": "RAG Benchmark Testing",
         "goal_other": "Other",
         

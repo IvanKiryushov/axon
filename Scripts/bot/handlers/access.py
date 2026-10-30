@@ -14,6 +14,7 @@ from aiogram.types import ReplyKeyboardRemove, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from Scripts.bot.config import ADMIN_ID, CONFLUENCE_INVITE_LINK
+from Scripts.bot.utils.alert_manager import send_ops_event
 from Scripts.bot.utils.access_db import (
     is_authorized,
     is_admin,
@@ -30,7 +31,8 @@ from Scripts.bot.utils.access_db import (
     get_user_detail,
     set_user_quota,
     add_user_quota,
-    reset_user_quota
+    reset_user_quota,
+    SKIP_STEP2_CHANNELS
 )
 from Scripts.bot.utils.i18n import t
 from Scripts.bot.keyboards.main_menu import (
@@ -112,10 +114,10 @@ async def process_step1_company(message: types.Message, state: FSMContext):
     company_info = message.text.strip()
     await state.update_data(company=company_info)
     
-    # Определяем источник пользователя: для прямого запроса (source == 'direct') Шаг 2 обязателен
+    # Определяем источник пользователя: для прямого запроса и лендинга Шаг 2 обязателен
     user_data = await get_or_create_user(user.id)
     source = user_data.get("source", "direct")
-    allow_skip = source in ("upwork", "github", "linkedin")
+    allow_skip = source in SKIP_STEP2_CHANNELS
     await state.update_data(allow_skip=allow_skip, source=source)
 
     # Переход к Шагу 2: Цель запроса
@@ -147,7 +149,7 @@ async def process_step2_details(message: types.Message, state: FSMContext):
     if not source:
         user_data = await get_or_create_user(user.id)
         source = user_data.get("source", "direct")
-        allow_skip = source in ("upwork", "github", "linkedin")
+        allow_skip = source in SKIP_STEP2_CHANNELS
 
     if not message.text or not message.text.strip():
         prompt_key = "request_step2_details" if allow_skip else "request_step2_details_mandatory"
@@ -194,29 +196,29 @@ async def process_step2_details(message: types.Message, state: FSMContext):
         parse_mode="HTML"
     )
 
-    # Отправляем карточку лида администратору
-    if ADMIN_ID and ADMIN_ID > 0:
-        username_str = f"@{user.username}" if user.username else "не указан"
-        admin_card = (
-            f"<b>Новая заявка на доступ к AxonBot</b>\n\n"
-            f"<b>Соискатель:</b> {user.full_name} ({username_str})\n"
-            f"<b>Telegram ID:</b> <code>{user.id}</code>\n"
-            f"<b>Компания / Роль:</b> {company or 'не указана'}\n"
-            f"<b>Цель:</b> {goal or 'не указана'}\n"
-            f"<b>Источник:</b> <code>{source}</code>\n"
-            f"<b>Язык:</b> {lang.upper()}\n"
-            f"<b>Время заявки:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    # Отправляем карточку лида в топик AxonBot (Control Room) или в fallback ЛС админа
+    username_str = f"@{user.username}" if user.username else "не указан"
+    admin_card = (
+        f"<b>Новая заявка на доступ к AxonBot</b>\n\n"
+        f"<b>Соискатель:</b> {user.full_name} ({username_str})\n"
+        f"<b>Telegram ID:</b> <code>{user.id}</code>\n"
+        f"<b>Компания / Роль:</b> {company or 'не указана'}\n"
+        f"<b>Цель:</b> {goal or 'не указана'}\n"
+        f"<b>Источник:</b> <code>{source}</code>\n"
+        f"<b>Язык:</b> {lang.upper()}\n"
+        f"<b>Время заявки:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    )
+    try:
+        await send_ops_event(
+            bot=message.bot,
+            text=admin_card,
+            reply_markup=get_admin_request_keyboard(req_id),
+            silent=False,
+            parse_mode="HTML"
         )
-        try:
-            await message.bot.send_message(
-                chat_id=ADMIN_ID,
-                text=admin_card,
-                reply_markup=get_admin_request_keyboard(req_id),
-                parse_mode="HTML"
-            )
-            logging.info(f"Заявка #{req_id} от user_id={user.id} отправлена администратору {ADMIN_ID}")
-        except Exception as e:
-            logging.error(f"Не удалось отправить уведомление администратору: {e}")
+        logging.info(f"Заявка #{req_id} от user_id={user.id} отправлена в Control Room / админу.")
+    except Exception as e:
+        logging.error(f"Не удалось отправить уведомление о заявке: {e}")
 
 @router.callback_query(F.data.startswith("approve:"))
 async def handle_admin_approve(callback: types.CallbackQuery):

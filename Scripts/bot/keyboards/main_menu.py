@@ -107,7 +107,7 @@ def get_goal_step_keyboard(lang: str = "ru", allow_skip: bool = False) -> ReplyK
     Для прямого трафика (direct) заполнение обоих шагов обязательно.
     """
     rows = [
-        [KeyboardButton(text=t("goal_company", lang)), KeyboardButton(text=t("goal_upwork", lang))],
+        [KeyboardButton(text=t("goal_company", lang)), KeyboardButton(text=t("goal_hiring", lang))],
         [KeyboardButton(text=t("goal_testing", lang)), KeyboardButton(text=t("goal_other", lang))],
     ]
     if allow_skip:
