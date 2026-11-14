@@ -7,11 +7,13 @@ AxonBot Base Handlers
 import os
 import sys
 import re
+import json
 import logging
 import aiohttp
 import subprocess
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse, urljoin
 from aiogram import Router, types, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import BufferedInputFile, InputMediaPhoto
@@ -68,6 +70,75 @@ def build_welcome_text(user_name: str, lang: str, authorized: bool) -> str:
     )
     return f"{title}\n\n{desc}"
 
+def _get_confluence_origin() -> str | None:
+    """Извлекает scheme://netloc из CONFLUENCE_BASE_URL (или CONFLUENCE_PUBLIC_URL), игнорируя заглушки."""
+    for candidate in (CONFLUENCE_BASE_URL, CONFLUENCE_PUBLIC_URL):
+        if not candidate or "yourcompany.internal" in candidate or "axonbim.internal" in candidate:
+            continue
+        parsed = urlparse(candidate.strip())
+        if parsed.scheme in ("http", "https") and parsed.netloc:
+            return f"{parsed.scheme}://{parsed.netloc}"
+    return None
+
+
+def _is_trusted_atlassian_url(url: str) -> bool:
+    """Проверяет, что URL относится к доверенному домену Confluence для передачи BasicAuth."""
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if parsed.scheme != "https" or not host:
+        return False
+    origin = _get_confluence_origin()
+    origin_host = (urlparse(origin).hostname or "").lower() if origin else ""
+    return host == origin_host or host.endswith(".atlassian.net")
+
+
+def _is_atlassian_media_cdn_url(url: str) -> bool:
+    """Проверяет, что URL является подписанным CDN-адресом медиафайлов Atlassian (без передачи BasicAuth)."""
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    return parsed.scheme == "https" and (
+        host == "api.media.atlassian.com"
+        or host.endswith(".media.atlassian.com")
+        or host.endswith(".atl-paas.net")
+    )
+
+
+async def _fetch_with_confluence_auth(
+    session: aiohttp.ClientSession,
+    url: str,
+    auth: aiohttp.BasicAuth | None,
+    timeout_sec: int = 15,
+    max_redirects: int = 3,
+) -> tuple[int, str, bytes]:
+    """Выполняет GET-запрос, сохраняя BasicAuth на *.atlassian.net и переходя на CDN медиа без auth."""
+    current_url = url
+    current_auth = auth
+    for _ in range(max_redirects + 1):
+        async with session.get(
+            current_url,
+            auth=current_auth,
+            timeout=aiohttp.ClientTimeout(total=timeout_sec),
+            allow_redirects=False,
+        ) as resp:
+            if resp.status in (301, 302, 303, 307, 308):
+                location = resp.headers.get("Location")
+                if not location:
+                    return resp.status, resp.headers.get("Content-Type", "").lower(), b""
+                next_url = urljoin(current_url, location)
+                if _is_trusted_atlassian_url(next_url):
+                    current_url = next_url
+                    continue
+                if _is_atlassian_media_cdn_url(next_url):
+                    current_url = next_url
+                    current_auth = None
+                    continue
+                logging.warning(f"Прерван редирект на недоверенный хост: {next_url}")
+                return resp.status, resp.headers.get("Content-Type", "").lower(), b""
+            data = await resp.read()
+            return resp.status, resp.headers.get("Content-Type", "").lower(), data
+    return 310, "", b""
+
+
 async def fetch_media_bytes(session: aiohttp.ClientSession, url: str) -> tuple[bytes, str] | None:
     """
     Скачивает медиафайл. Для Confluence Cloud использует официальный REST API v1 с Basic Auth.
@@ -88,44 +159,42 @@ async def fetch_media_bytes(session: aiohttp.ClientSession, url: str) -> tuple[b
                 logging.warning(f"Ошибка чтения media_cache ({cached_mp4}): {e}")
 
     auth = aiohttp.BasicAuth(CONFLUENCE_EMAIL, CONFLUENCE_API_TOKEN) if CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN else None
+    origin = _get_confluence_origin()
 
     # Проверяем, является ли URL ссылкой на вложение Confluence Cloud
     confluence_match = re.search(r'(https?://[^/]+)/wiki/(?:download/)?attachments/(\d+)/([^/?#]+)', url)
+    target_url = url
     if confluence_match:
-        base_domain = confluence_match.group(1)
+        base_domain = origin or confluence_match.group(1)
         page_id = confluence_match.group(2)
         target_filename = confluence_match.group(3)
+        if origin and confluence_match.group(1) != origin:
+            target_url = f"{origin}{url[len(confluence_match.group(1)):]}"
 
         try:
             meta_url = f"{base_domain}/wiki/rest/api/content/{page_id}/child/attachment?filename={target_filename}"
-            async with session.get(meta_url, auth=auth, timeout=aiohttp.ClientTimeout(total=10)) as meta_resp:
-                if meta_resp.status == 200:
-                    meta_data = await meta_resp.json()
-                    results = meta_data.get('results', [])
-                    if results and '_links' in results[0] and 'download' in results[0]['_links']:
-                        dl_path = results[0]['_links']['download']
-                        dl_url = f"{base_domain}/wiki{dl_path}" if not dl_path.startswith('/wiki') else f"{base_domain}{dl_path}"
-                        
-                        async with session.get(dl_url, auth=auth, timeout=aiohttp.ClientTimeout(total=20)) as dl_resp:
-                            if dl_resp.status == 200:
-                                data = await dl_resp.read()
-                                return data, filename
-                            else:
-                                logging.warning(f"REST API download returned {dl_resp.status} for {dl_url}")
+            status, content_type, body = await _fetch_with_confluence_auth(session, meta_url, auth, timeout_sec=10)
+            if status == 200 and not content_type.startswith("text/html"):
+                meta_data = json.loads(body.decode("utf-8"))
+                results = meta_data.get('results', [])
+                if results and '_links' in results[0] and 'download' in results[0]['_links']:
+                    dl_path = results[0]['_links']['download']
+                    dl_url = f"{base_domain}/wiki{dl_path}" if not dl_path.startswith('/wiki') else f"{base_domain}{dl_path}"
+                    dl_status, dl_type, data = await _fetch_with_confluence_auth(session, dl_url, auth, timeout_sec=20)
+                    if dl_status == 200 and not dl_type.startswith("text/html"):
+                        return data, filename
+                    logging.warning(f"REST API download returned {dl_status} for {dl_url}")
         except Exception as e:
             logging.error(f"Ошибка получения вложения Confluence через REST API: {e}")
 
-    # Fallback: прямой GET запрос
+    # Fallback: прямой GET запрос (с сохранением BasicAuth на доверенных редиректах)
     try:
-        async with session.get(url, auth=auth, timeout=aiohttp.ClientTimeout(total=15)) as resp:
-            if resp.status == 200:
-                data = await resp.read()
-                return data, filename
-            else:
-                logging.warning(f"Не удалось загрузить медиа ({resp.status}): {url}")
+        status, content_type, data = await _fetch_with_confluence_auth(session, target_url, auth, timeout_sec=15)
+        if status == 200 and not content_type.startswith("text/html"):
+            return data, filename
+        logging.warning(f"Не удалось загрузить медиа ({status}): {target_url}")
     except Exception as e:
-        logging.error(f"Ошибка загрузки медиа {url}: {e}")
-
+        logging.error(f"Ошибка загрузки медиа {target_url}: {e}")
     return None
 
 import io
