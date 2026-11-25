@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
@@ -57,8 +58,21 @@ ALERT_BOT_TOKEN = os.getenv("ALERT_BOT_TOKEN", "").strip()
 # Официальная инвайт-ссылка на пространство Confluence (задается в .env)
 CONFLUENCE_INVITE_LINK = os.getenv("CONFLUENCE_INVITE_LINK", "")
 
-# Версия приложения (SSOT)
-BOT_VERSION = os.getenv("BOT_VERSION", "2.2.1")
+# Версия приложения (SSOT: берется из верхнего заголовка CHANGELOG.md)
+def _read_changelog_version(default: str = "2.2.7") -> str:
+    changelog = PROJECT_ROOT / "CHANGELOG.md"
+    if changelog.exists():
+        try:
+            text = changelog.read_text(encoding="utf-8")
+            m = re.search(r"^##\s+\[(\d+\.\d+\.\d+)\]", text, flags=re.MULTILINE)
+            if m:
+                return m.group(1)
+        except OSError:
+            pass
+    return default
+
+
+BOT_VERSION = os.getenv("BOT_VERSION") or _read_changelog_version()
 
 # Настройки квот и защиты API-бюджета (Demo Quota & Budget Guard)
 DEFAULT_DEMO_QUOTA = int(os.getenv("DEFAULT_DEMO_QUOTA", 15))

@@ -41,6 +41,11 @@ def get_main_keyboard(is_authorized: bool = False, lang: str = "ru", is_admin: b
             InlineKeyboardButton(text=t("btn_request_access", lang), callback_data="request_access")
         )
     
+    # Ветка обсуждения внедрения — всегда на виду для всех пользователей
+    builder.row(
+        InlineKeyboardButton(text=t("btn_offer", lang), callback_data="offer_start")
+    )
+    
     # Кнопка смены языка
     builder.row(
         InlineKeyboardButton(text=t("btn_lang", lang), callback_data="toggle_lang")
@@ -141,9 +146,47 @@ def get_quota_exhausted_keyboard(lang: str = "ru") -> InlineKeyboardMarkup:
         InlineKeyboardButton(text=t("btn_request_access", lang), callback_data="request_access")
     )
     builder.row(
+        InlineKeyboardButton(text=t("btn_offer", lang), callback_data="offer_start")
+    )
+    builder.row(
         InlineKeyboardButton(text=t("btn_lang", lang), callback_data="toggle_lang")
     )
     return builder.as_markup()
+
+def get_offer_kb_step_keyboard(lang: str = "ru") -> ReplyKeyboardMarkup:
+    """Reply-клавиатура Шага 1 анкеты внедрения (наличие базы знаний)."""
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text=t("offer_kb_confluence", lang)), KeyboardButton(text=t("offer_kb_files", lang))],
+            [KeyboardButton(text=t("offer_kb_none", lang)), KeyboardButton(text=t("offer_kb_other", lang))],
+            [KeyboardButton(text=t("btn_cancel", lang))],
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+    )
+
+def get_offer_scope_step_keyboard(lang: str = "ru") -> ReplyKeyboardMarkup:
+    """Reply-клавиатура Шага 2 анкеты внедрения (масштаб команды)."""
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text=t("offer_scope_small", lang)), KeyboardButton(text=t("offer_scope_mid", lang))],
+            [KeyboardButton(text=t("offer_scope_large", lang)), KeyboardButton(text=t("btn_skip", lang))],
+            [KeyboardButton(text=t("btn_cancel", lang))],
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+    )
+
+def get_offer_contact_step_keyboard(lang: str = "ru") -> ReplyKeyboardMarkup:
+    """Reply-клавиатура Шага 3 анкеты внедрения (контакт)."""
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text=t("offer_contact_tg", lang))],
+            [KeyboardButton(text=t("btn_cancel", lang))],
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+    )
 
 def get_whitelist_paged_keyboard(users: list[dict], page: int, total_count: int, page_size: int = 5) -> InlineKeyboardMarkup:
     """

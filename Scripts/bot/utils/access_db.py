@@ -61,6 +61,19 @@ async def init_db(admin_id: int = 0):
             );
         """)
         
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS offer_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                source TEXT DEFAULT 'direct',
+                kb_status TEXT,
+                team_scope TEXT,
+                company_contact TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(user_id)
+            );
+        """)
+        
         # Автомиграция колонок для существующих баз данных (access_requests)
         cursor = await db.execute("PRAGMA table_info(access_requests);")
         existing_cols = {row["name"] for row in await cursor.fetchall()}
@@ -91,7 +104,7 @@ async def init_db(admin_id: int = 0):
             await db.commit()
             logging.info(f"Администратор {admin_id} зарегистрирован в базе данных.")
 
-EXTERNAL_CHANNELS = {"github", "upwork", "linkedin", "landing", "deck", "presentation", "slides", "hh"}
+EXTERNAL_CHANNELS = {"github", "upwork", "linkedin", "landing", "deck", "presentation", "slides", "hh", "confluence", "offer"}
 VALID_SOURCES = EXTERNAL_CHANNELS | {"direct", "system"}
 SKIP_STEP2_CHANNELS = {"github", "upwork", "linkedin"}
 
@@ -568,7 +581,40 @@ async def reset_user_completely(user_id: int, admin_id: int) -> bool:
         return False
         
     async with get_db() as db:
+        await db.execute("DELETE FROM offer_requests WHERE user_id = ?;", (user_id,))
         await db.execute("DELETE FROM access_requests WHERE user_id = ?;", (user_id,))
         await db.execute("DELETE FROM users WHERE user_id = ?;", (user_id,))
         await db.commit()
-        return True
+        return True
+
+
+async def create_offer_request(
+    user_id: int,
+    source: str = "direct",
+    kb_status: str = "",
+    team_scope: str = "",
+    company_contact: str = "",
+) -> int:
+    """Сохраняет заявку на обсуждение внедрения AxonBot."""
+    now = datetime.now().isoformat()
+    async with get_db() as db:
+        cursor = await db.execute(
+            """
+            INSERT INTO offer_requests (user_id, source, kb_status, team_scope, company_contact, created_at)
+            VALUES (?, ?, ?, ?, ?, ?);
+            """,
+            (user_id, source or "direct", kb_status, team_scope, company_contact, now),
+        )
+        await db.commit()
+        return cursor.lastrowid
+
+
+async def get_offer_requests_by_user(user_id: int) -> list[dict]:
+    """Возвращает список заявок на внедрение для пользователя."""
+    async with get_db() as db:
+        cursor = await db.execute(
+            "SELECT * FROM offer_requests WHERE user_id = ? ORDER BY id DESC;",
+            (user_id,),
+        )
+        rows = await cursor.fetchall()
+        return [dict(r) for r in rows]

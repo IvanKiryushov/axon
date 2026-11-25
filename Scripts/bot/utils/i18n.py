@@ -69,9 +69,40 @@ MESSAGES = {
         "quota_cta_full": "Вам открыт расширенный доступ к базе регламентов.",
         "btn_quota": "Баланс запросов",
         "btn_request_access": "Запросить доступ к базе знаний",
+        "btn_offer": "Обсудить внедрение",
         "btn_share_contact": "📱 Поделиться контактом",
         "btn_skip": "Пропустить ⏭",
         "btn_cancel": "❌ Отмена",
+        
+        # Анкета внедрения (Offer funnel)
+        "offer_step1_kb": (
+            "<b>Обсудить внедрение AxonBot</b>\n\n"
+            "Ответьте на 3 коротких вопроса (можно кнопками или своим текстом) — "
+            "я передам заявку напрямую разработчику.\n\n"
+            "<b>Шаг 1 из 3.</b> Есть ли у вас сейчас база знаний или BIM-стандарт, и где он хранится?"
+        ),
+        "offer_kb_confluence": "Confluence / Notion",
+        "offer_kb_files": "PDF / Word / папки",
+        "offer_kb_none": "Пока нет стандарта",
+        "offer_kb_other": "Другое (напишу)",
+        "offer_step2_scope": (
+            "<b>Шаг 2 из 3.</b> Сколько примерно человек в команде и какие разделы/задачи хотите покрыть? "
+            "(можно выбрать кнопку или коротко описать текстом):"
+        ),
+        "offer_scope_small": "До 15 человек",
+        "offer_scope_mid": "15–50 человек",
+        "offer_scope_large": "50+ человек",
+        "offer_step3_contact": (
+            "<b>Шаг 3 из 3.</b> Укажите компанию, роль и как удобнее связаться "
+            "(или нажмите кнопку ниже, чтобы я написал прямо сюда в Telegram):"
+        ),
+        "offer_contact_tg": "Написать мне в Telegram",
+        "offer_submitted": (
+            "<b>Спасибо! Заявка на обсуждение внедрения отправлена.</b>\n\n"
+            "Я изучу ваши вводные и свяжусь с вами лично в Telegram, чтобы обсудить задачу и формат запуска."
+        ),
+        "offer_cancelled": "Заполнение анкеты отменено.",
+        "offer_voice_not_ready": "Голосовой ввод с расшифровкой скоро появится. Пока, пожалуйста, ответьте текстом или выберите кнопку ниже.",
         
         # Пошаговая FSM-воронка заявки на доступ
         "request_step1_company": "Укажите вашу компанию и специализацию (например: СпецПроект, BIM-менеджер / проектировщик КР):",
@@ -222,9 +253,39 @@ MESSAGES = {
         "quota_cta_full": "You have full access to the regulations database.",
         "btn_quota": "Query Balance",
         "btn_request_access": "Request Knowledge Base Access",
+        "btn_offer": "Discuss Implementation",
         "btn_share_contact": "📱 Share Contact",
         "btn_skip": "Skip ⏭",
         "btn_cancel": "❌ Cancel",
+        
+        # Implementation inquiry funnel (Offer)
+        "offer_step1_kb": (
+            "<b>Discuss AxonBot Implementation</b>\n\n"
+            "Answer 3 quick questions (via buttons or short text) and I will forward your inquiry directly to the developer.\n\n"
+            "<b>Step 1 of 3.</b> Do you already have a knowledge base or BIM standard, and where is it stored?"
+        ),
+        "offer_kb_confluence": "Confluence / Notion",
+        "offer_kb_files": "PDF / Word / Folders",
+        "offer_kb_none": "No standard yet",
+        "offer_kb_other": "Other (I'll type)",
+        "offer_step2_scope": (
+            "<b>Step 2 of 3.</b> Roughly how large is your team and which disciplines/tasks do you want to cover? "
+            "(pick a button or type a short note):"
+        ),
+        "offer_scope_small": "Up to 15 people",
+        "offer_scope_mid": "15–50 people",
+        "offer_scope_large": "50+ people",
+        "offer_step3_contact": (
+            "<b>Step 3 of 3.</b> Share your company, role, and preferred contact "
+            "(or tap the button below to continue right here in Telegram):"
+        ),
+        "offer_contact_tg": "Message me on Telegram",
+        "offer_submitted": (
+            "<b>Thank you! Your implementation inquiry has been sent.</b>\n\n"
+            "I will review your details and reach out personally on Telegram to discuss your setup."
+        ),
+        "offer_cancelled": "Implementation inquiry cancelled.",
+        "offer_voice_not_ready": "Voice input with transcription is coming soon. For now, please reply with text or pick a button below.",
         
         # Step-by-step access request funnel
         "request_step1_company": "Specify your company and role (e.g.: SpecProject, BIM Manager / Structural Engineer):",

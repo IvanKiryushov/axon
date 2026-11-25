@@ -34,11 +34,11 @@ from Scripts.bot.utils.i18n import t
 from Scripts.bot.utils.alert_manager import send_ops_event, send_critical_alert
 
 PUBLIC_COMMANDS = {
-    "/start", "/help", "/examples", "/request_access", 
+    "/start", "/help", "/examples", "/request_access", "/offer",
     "/lang", "/language", "/status", "/quota", "/balance", "/limit", "/cancel"
 }
 PUBLIC_CALLBACK_PREFIXES = {
-    "set_lang:", "request_access", "cat:", "menu", "help", 
+    "set_lang:", "request_access", "offer_start", "offer:", "cat:", "menu", "help", 
     "wlu:", "wlp:", "wl_noop", "qa:", "qm:", "qd:", "qu:", "qr:", "wlr:", "wld:"
 }
 VALID_CHANNELS = EXTERNAL_CHANNELS
@@ -76,8 +76,14 @@ class WhitelistMiddleware(BaseMiddleware):
         client_lang = (user.language_code or "ru").lower()
         default_lang = "ru" if client_lang.startswith(("ru", "be", "uk")) else "en"
         if deep_link_source in VALID_CHANNELS:
-            if deep_link_source == "hh" or ref_candidate.endswith(("_ru", "ru")):
+            if ref_candidate.endswith(("_ru", "ru")):
                 default_lang = "ru"
+            elif ref_candidate.endswith(("_en", "en")):
+                default_lang = "en"
+            elif deep_link_source == "hh":
+                default_lang = "ru"
+            elif deep_link_source in ("confluence", "offer"):
+                pass  # оставляем язык клиента Telegram
             else:
                 default_lang = "en"
 
@@ -137,7 +143,7 @@ class WhitelistMiddleware(BaseMiddleware):
             state = data.get("state")
             if state:
                 current_state = await state.get_state()
-                if current_state and "access" in current_state.lower():
+                if current_state and ("access" in current_state.lower() or "offer" in current_state.lower()):
                     return await handler(event, data)
 
             if event.text:

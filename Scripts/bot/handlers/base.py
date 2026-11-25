@@ -15,7 +15,8 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse, urljoin
 from aiogram import Router, types, F
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart, Command, CommandObject
+from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, InputMediaPhoto
 from aiogram.utils.chat_action import ChatActionSender
 
@@ -148,14 +149,15 @@ async def fetch_media_bytes(session: aiohttp.ClientSession, url: str) -> tuple[b
     stem = Path(filename).stem
     ext = Path(filename.lower()).suffix
 
-    # 0. Проверяем локальный кэш (для GIF, оптимизированных в MP4 H.264)
-    if ext == '.gif':
+    # 0. Проверяем локальный кэш (для GIF и GIF-в-PNG, оптимизированных в MP4 H.264)
+    if ext in ('.gif', '.png'):
         cached_mp4 = MEDIA_CACHE_DIR / f"{stem}.mp4"
-        if cached_mp4.exists() and cached_mp4.stat().st_size > 0:
+        if cached_mp4.exists() and cached_mp4.is_file():
             try:
-                data = cached_mp4.read_bytes()
-                return data, f"{stem}.mp4"
-            except Exception as e:
+                if cached_mp4.stat().st_size > 0:
+                    data = cached_mp4.read_bytes()
+                    return data, f"{stem}.mp4"
+            except (OSError, TypeError) as e:
                 logging.warning(f"Ошибка чтения media_cache ({cached_mp4}): {e}")
 
     auth = aiohttp.BasicAuth(CONFLUENCE_EMAIL, CONFLUENCE_API_TOKEN) if CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN else None
@@ -229,8 +231,8 @@ async def send_confluence_media_batch(bot, chat_id: int, urls: list[str]):
                 data, filename = result
                 dims = get_media_dimensions(data)
                 ext = Path(filename.lower()).suffix
-                if ext == '.gif':
-                    animations.append((data, filename, dims))
+                if ext == '.gif' or data[:4] == b'GIF8':
+                    animations.append((data, f"{Path(filename).stem}.gif" if ext != '.gif' else filename, dims))
                 elif ext == '.mp4' and (MEDIA_CACHE_DIR / filename).exists():
                     animations.append((data, filename, dims))
                 elif ext in ['.mp4', '.mov', '.webm']:
@@ -487,8 +489,14 @@ async def cmd_reboot(message: types.Message):
     sys.exit()
 
 @router.message(CommandStart())
-async def cmd_start(message: types.Message):
-    """Приветственное меню бота с поддержкой Deep Linking рефералов."""
+async def cmd_start(message: types.Message, command: CommandObject | None = None, state: FSMContext | None = None):
+    """Приветственное меню бота с поддержкой Deep Linking рефералов и ветки /start offer."""
+    args = (command.args or "").strip().lower() if command else ""
+    if args.startswith("offer") and state is not None:
+        from Scripts.bot.handlers.offer import start_offer_funnel
+        await start_offer_funnel(message, state, source_override="offer")
+        return
+
     user = message.from_user
     lang = await get_user_language(user.id)
     authorized = await is_authorized(user.id)

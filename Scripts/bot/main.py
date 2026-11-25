@@ -29,7 +29,7 @@ import html
 import traceback
 
 from Scripts.bot.config import BOT_TOKEN, ADMIN_ID, BOT_VERSION, CONTROL_CHAT_ID
-from Scripts.bot.handlers import base, access
+from Scripts.bot.handlers import base, access, offer
 from Scripts.bot.middlewares.whitelist import WhitelistMiddleware
 from Scripts.bot.utils.access_db import init_db
 from Scripts.bot.utils.conversation_logger import set_session_path
@@ -110,6 +110,7 @@ async def setup_bot_profile(bot: Bot):
     commands_en = [
         BotCommand(command="start", description="Main Menu & Presentation"),
         BotCommand(command="examples", description="Benchmark Case Catalog"),
+        BotCommand(command="offer", description="Discuss Implementation"),
         BotCommand(command="quota", description="Demo Quota & Balance"),
         BotCommand(command="lang", description="Switch Language (RU/EN)"),
         BotCommand(command="clear", description="Clear Conversation Memory"),
@@ -119,6 +120,7 @@ async def setup_bot_profile(bot: Bot):
     commands_ru = [
         BotCommand(command="start", description="Главное меню и презентация"),
         BotCommand(command="examples", description="Каталог кейсов"),
+        BotCommand(command="offer", description="Обсудить внедрение"),
         BotCommand(command="quota", description="Баланс запросов и квота"),
         BotCommand(command="lang", description="Сменить язык интерфейса (RU/EN)"),
         BotCommand(command="clear", description="Очистить контекст диалога"),
@@ -136,6 +138,7 @@ async def setup_bot_profile(bot: Bot):
             admin_commands = [
                 BotCommand(command="start", description="Главное меню"),
                 BotCommand(command="examples", description="Каталог кейсов"),
+        BotCommand(command="offer", description="Обсудить внедрение"),
                 BotCommand(command="quota", description="Баланс запросов"),
                 BotCommand(command="lang", description="Сменить язык (RU/EN)"),
                 BotCommand(command="clear", description="Очистить контекст"),
@@ -227,6 +230,7 @@ async def main():
         return True
 
     dp.include_router(access.router)
+    dp.include_router(offer.router)
     dp.include_router(base.router)
 
     # 7. Настройка нативного меню команд и профиля бота в Telegram
